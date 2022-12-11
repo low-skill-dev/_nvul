@@ -1,0 +1,10 @@
+[
+  {
+    "from": "integer",
+    "implicitTo": "float"
+  },
+  {
+    "from": "integer",
+    "implicitTo": "timestamp"
+  }
+]

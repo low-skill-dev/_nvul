@@ -1,0 +1,44 @@
+[
+  {
+    "word": "float",
+    "alias": "число",
+    "type": "vartype",
+    "ctor": null
+  },
+  {
+    "word": "logical",
+    "alias": "логический",
+    "type": "vartype",
+    "ctor": null
+  },
+  {
+    "word": "integer",
+    "alias": "целое",
+    "type": "vartype",
+    "ctor": null
+  },
+  {
+    "word": "charseq",
+    "alias": "строка",
+    "type": "vartype",
+    "ctor": null
+  },
+  {
+    "word": "timestamp",
+    "alias": "время",
+    "type": "vartype",
+    "ctor": null
+  },
+  {
+    "word": "matrix",
+    "alias": "матрица",
+    "type:": "vartype",
+    "ctor": {
+      "parametersTypes": [ "float", "float" ],
+      "parametersDesctiption": [
+        "The first dimension of the matrix",
+        "The second dimension of the matrix"
+      ]
+    }
+  }
+]

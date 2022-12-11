@@ -1,0 +1,52 @@
+{
+	"keywords": [
+		{
+			"word": "float",
+			"translateTo": "double"
+		},
+		{
+			"word": "integer",
+			"translateTo": "long"
+		},
+		{
+			"word": "timestamp",
+			"translateTo": "DateTime"
+		},
+		{
+			"word": "charseq",
+			"translateTo": "string"
+		},
+		{
+			"word": "logical",
+			"translateTo": "bool"
+		}
+	],
+	"functions": [
+		{
+			"name": "print",
+			"translateTo": "Print"
+		}
+	],
+	"operators": [
+		{
+			"string": "==",
+			"translateTo": "=="
+		},
+		{
+			"string": "+",
+			"translateTo": "+"
+		},
+		{
+			"string": "-",
+			"translateTo": "-"
+		},
+		{
+			"string": "/",
+			"translateTo": "/"
+		},
+		{
+			"string": "*",
+			"translateTo": "*"
+		}
+	]
+}

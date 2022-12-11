@@ -1,0 +1,30 @@
+[
+	{
+		"string": "==",
+		"translateTo": "==",
+		"priority": 128,
+		"leftTypes": [ "float", "integer","matrix" ],
+		"rightTypes": [ "float", "integer", "matrix" ],
+		"evaluatesTo": "logical"
+	},
+	{
+		"string": "+",
+		"translateTo": "+",
+		"priority": 256,
+		"leftTypes": [ "float", "integer"],
+		"rightTypes": [ "float", "integer"],
+		"evaluatesTo": "float"
+	},
+	{
+		"string": "-",
+		"translateTo": "-"
+	},
+	{
+		"string": "/",
+		"translateTo": "/"
+	},
+	{
+		"string": "*",
+		"translateTo": "*"
+	}
+]
