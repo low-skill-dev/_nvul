@@ -1,30 +1,16 @@
 [
 	{
-		"string": "==",
-		"translateTo": "==",
-		"priority": 128,
-		"leftTypes": [ "float", "integer","matrix" ],
-		"rightTypes": [ "float", "integer", "matrix" ],
-		"evaluatesTo": "logical"
+		"OperatorString": "==",
+		"OperatorPriority": 128,
+		"LeftType": "float",
+		"RightType": "float",
+		"EvaluatesTo": "logical"
 	},
 	{
-		"string": "+",
-		"translateTo": "+",
-		"priority": 256,
-		"leftTypes": [ "float", "integer"],
-		"rightTypes": [ "float", "integer"],
-		"evaluatesTo": "float"
-	},
-	{
-		"string": "-",
-		"translateTo": "-"
-	},
-	{
-		"string": "/",
-		"translateTo": "/"
-	},
-	{
-		"string": "*",
-		"translateTo": "*"
+		"OperatorString": "+",
+		"OperatorPriority": 256,
+		"LeftType": "float",
+		"RightType": "float",
+		"EvaluatesTo": "float"
 	}
 ]

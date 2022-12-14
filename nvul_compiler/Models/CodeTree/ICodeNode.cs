@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace nvul_compiler.Models.CodeTree
 {
-	internal interface ICodeNode
+	public interface ICodeNode
 	{
 	}
 }

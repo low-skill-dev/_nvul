@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace nvul_compiler.Models.Configuration
 {
-	internal class NvulFunction
+	public class NvulFunction
 	{
 		public string FunctionName { get; set; }
 		public string AliasName { get; set; }

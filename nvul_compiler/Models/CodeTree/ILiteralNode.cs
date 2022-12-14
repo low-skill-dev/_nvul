@@ -6,21 +6,21 @@ using System.Threading.Tasks;
 
 namespace nvul_compiler.Models.CodeTree
 {
-	internal interface ILiteralNode:ICodeNode
+	public interface ILiteralNode:ICodeNode
 	{
 
 	}
 
-	internal class IntegerLiteral : ILiteralNode
+	public class IntegerLiteral : ILiteralNode
 	{
-		public int Value { get; set; }
-		public IntegerLiteral(int value)
+		public long Value { get; set; }
+		public IntegerLiteral(long value)
 		{
 			this.Value = value;
 		}
 	}
 
-	internal class FloatLiteral : ILiteralNode
+	public class FloatLiteral : ILiteralNode
 	{
 		public double Value { get; set; }
 		public FloatLiteral(double value)
@@ -29,7 +29,7 @@ namespace nvul_compiler.Models.CodeTree
 		}
 	}
 
-	internal class StringLiteral : ILiteralNode
+	public class StringLiteral : ILiteralNode
 	{
 		public string Value { get; set; }
 		public StringLiteral(string value)
@@ -38,7 +38,7 @@ namespace nvul_compiler.Models.CodeTree
 		}
 	}
 
-	internal class BoolLiteral:ILiteralNode
+	public class BoolLiteral:ILiteralNode
 	{
 		public bool Value { get; set; }
 		public BoolLiteral(bool value)

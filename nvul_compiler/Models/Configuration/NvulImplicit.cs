@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace nvul_compiler.Models.Configuration
 {
-	internal class NvulImplicit
+	public class NvulImplicit
 	{
 		public string Vartype { get; set; }
 		public string ImplicitTo { get; set; }

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace nvul_compiler.Models.CodeTree
 {
-	internal class FunctionCallNode
+	public class FunctionCallNode:ICodeNode
 	{
-		[Obsolete]
+	//	[Obsolete]
 		public bool isStatic => this.VariableName is null;
 		// null if method is static!
 		public string? VariableName { get; set; }

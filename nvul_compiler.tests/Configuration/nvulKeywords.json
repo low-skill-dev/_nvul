@@ -32,7 +32,7 @@
   {
     "Word": "matrix",
     "Alias": "матрица",
-    "Type:": "vartype",
+    "Type": "vartype",
     "CtorArguments": {
       "ParametersTypes": [ "float", "float" ],
       "ParametersDescription": [
@@ -44,12 +44,16 @@
   {
     "Word": "while",
     "Alias": "пока",
-    "Type:": "cycleOperator",
+    "Type": "cycleOperator",
     "CtorArguments": {
       "ParametersTypes": [ "logical" ],
-      "ParametersDescription": [
-        "Condition"
-      ]
+      "ParametersDescription": ["Condition"]
     }
+  },
+  {
+    "Word": "byte",
+    "Alias": "байт",
+    "Type": "vartype",
+    "CtorArguments": null
   }
 ]

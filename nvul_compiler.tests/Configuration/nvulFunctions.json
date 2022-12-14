@@ -1,0 +1,8 @@
+[
+	{
+		"FunctionName": "Print",
+		"AliasName": "напечатать",
+		"ApplicableTypes": [ "matrix" ],
+		"Arguments": null
+	}
+]

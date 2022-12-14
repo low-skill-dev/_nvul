@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace nvul_compiler.Models.Configuration
 {
-	internal class NvulFunctionParameters
+	public class NvulFunctionParameters
 	{
 		public IList<string> ParametersTypes { get; set; }
 		public IList<string> ParametersDescription { get; set; }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace nvul_compiler.Models.CodeTree
 {
-	internal class AssignmentNode
+	public class AssignmentNode:ICodeNode
 	{
 		public string VariableName { get; set; }
 		public ICodeNode AssignedValue { get; set; }

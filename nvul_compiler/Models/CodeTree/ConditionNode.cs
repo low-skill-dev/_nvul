@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace nvul_compiler.Models.CodeTree
 {
-	internal class ConditionNode
+	public class ConditionNode : INodeWithConditionAndChilds
 	{
 		public ICodeNode Condition { get; set; }
-		public IList<ICodeNode> Childs { get; set; }
+		public IEnumerable<ICodeNode> Childs { get; set; }
 		public ConditionNode? NextCondition { get; set; }
 
-		public ConditionNode(ICodeNode condition, IList<ICodeNode> childs, ConditionNode? nextCondition=null)
+		public ConditionNode(ICodeNode condition, IEnumerable<ICodeNode> childs, ConditionNode? nextCondition=null)
 		{
 			this.Condition = condition;
 			this.Childs = childs;

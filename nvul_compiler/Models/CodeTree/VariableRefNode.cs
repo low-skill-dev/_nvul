@@ -6,13 +6,12 @@ using System.Threading.Tasks;
 
 namespace nvul_compiler.Models.CodeTree
 {
-	public class DeclarationNode:ICodeNode
+	internal class VariableRefNode:ICodeNode
 	{
-		public string VariableType { get; set; }
 		public string VariableName { get; set; }
-		public DeclarationNode(string variableType, string variableName)
+
+		public VariableRefNode(string variableName)
 		{
-			this.VariableType = variableType;
 			this.VariableName = variableName;
 		}
 	}
