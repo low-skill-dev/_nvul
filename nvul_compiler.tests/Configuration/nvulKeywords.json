@@ -47,7 +47,16 @@
     "Type": "cycleOperator",
     "CtorArguments": {
       "ParametersTypes": [ "logical" ],
-      "ParametersDescription": ["Condition"]
+      "ParametersDescription": [ "Condition" ]
+    }
+  },
+  {
+    "Word": "if",
+    "Alias": "если",
+    "Type": "conditionalOperator",
+    "CtorArguments": {
+      "ParametersTypes": [ "logical" ],
+      "ParametersDescription": [ "Condition" ]
     }
   },
   {

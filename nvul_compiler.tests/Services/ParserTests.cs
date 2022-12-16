@@ -276,6 +276,51 @@ namespace nvul_compiler.tests.Services
 				{
 					TypeNameHandling = TypeNameHandling.Auto
 				});
+
+			_output.WriteLine(json);
+		}
+
+		[Fact]
+		public void CanParseConditionalString()
+		{
+			var testString = "if(myF-0 == 0) { myF.Print(); } ";
+
+			var parsed = parser.ParseLine(testString);
+
+			Assert.IsType<ConditionNode>(parsed);
+			var result = (ConditionNode)parsed;
+
+			Assert.IsType<OperatorNode>(result.Condition);
+			Assert.Single(result.Childs);
+			Assert.IsType<FunctionCallNode>(result.Childs.First());
+			string json = JsonConvert.SerializeObject(parsed, Formatting.Indented/*,
+				new JsonSerializerSettings()
+				{
+					TypeNameHandling = TypeNameHandling.Auto
+				}*/);
+			_output.WriteLine(json);
+		}
+
+		[Fact]
+		public void CanParseFunctionCallNode()
+		{
+			var testString = "if(IsNumbersNotEqual(myF,123)) { myF.Print(); } ";
+
+			var parsed = parser.ParseLine(testString);
+
+			Assert.IsType<ConditionNode>(parsed);
+			var result = (ConditionNode)parsed;
+
+			Assert.IsType<FunctionCallNode>(result.Condition);
+			var condition = (FunctionCallNode)result.Condition;
+			Assert.IsType<VariableRefNode>(condition.Arguments.First());
+			Assert.IsType<IntegerLiteral>(condition.Arguments.Last());
+
+			string json = JsonConvert.SerializeObject(parsed, Formatting.Indented/*,
+				new JsonSerializerSettings()
+				{
+					TypeNameHandling = TypeNameHandling.Auto
+				}*/);
 			_output.WriteLine(json);
 		}
 	}

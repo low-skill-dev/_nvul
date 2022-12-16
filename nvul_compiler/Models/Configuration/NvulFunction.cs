@@ -10,13 +10,15 @@ namespace nvul_compiler.Models.Configuration
 	{
 		public string FunctionName { get; set; }
 		public string AliasName { get; set; }
+		public string EvaluatesTo { get; set; }
 		public IList<string>? ApplicableTypes { get; set; }
 		public NvulFunctionParameters? Arguments { get; set; }
 
-		public NvulFunction(string functionName, string aliasName, IList<string>? applicableTypes=null, NvulFunctionParameters? arguments=null)
+		public NvulFunction(string functionName, string aliasName,string evaluatesTo, IList<string>? applicableTypes=null, NvulFunctionParameters? arguments=null)
 		{
 			this.FunctionName = functionName;
 			this.AliasName = aliasName;
+			this.EvaluatesTo = evaluatesTo;
 			this.ApplicableTypes = applicableTypes;
 			this.Arguments = arguments;
 		}

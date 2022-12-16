@@ -47,5 +47,162 @@
 		"LeftType": "float",
 		"RightType": "float",
 		"EvaluatesTo": "logical"
+	},
+
+
+
+	{
+		"OperatorString": "+",
+		"OperatorPriority": 768,
+		"LeftType": "float",
+		"RightType": "integer",
+		"EvaluatesTo": "float"
+	},
+	{
+		"OperatorString": "-",
+		"OperatorPriority": 768,
+		"LeftType": "float",
+		"RightType": "integer",
+		"EvaluatesTo": "float"
+	},
+	{
+		"OperatorString": "*",
+		"OperatorPriority": 512,
+		"LeftType": "float",
+		"RightType": "integer",
+		"EvaluatesTo": "float"
+	},
+	{
+		"OperatorString": "/",
+		"OperatorPriority": 512,
+		"LeftType": "float",
+		"RightType": "integer",
+		"EvaluatesTo": "float"
+	},
+	{
+		"OperatorString": "<",
+		"OperatorPriority": 1024,
+		"LeftType": "float",
+		"RightType": "integer",
+		"EvaluatesTo": "logical"
+	},
+	{
+		"OperatorString": ">",
+		"OperatorPriority": 1024,
+		"LeftType": "float",
+		"RightType": "integer",
+		"EvaluatesTo": "logical"
+	},
+	{
+		"OperatorString": "==",
+		"OperatorPriority": 1024,
+		"LeftType": "float",
+		"RightType": "integer",
+		"EvaluatesTo": "logical"
+	},
+
+
+
+	{
+		"OperatorString": "+",
+		"OperatorPriority": 768,
+		"LeftType": "integer",
+		"RightType": "integer",
+		"EvaluatesTo": "integer"
+	},
+	{
+		"OperatorString": "-",
+		"OperatorPriority": 768,
+		"LeftType": "integer",
+		"RightType": "integer",
+		"EvaluatesTo": "integer"
+	},
+	{
+		"OperatorString": "*",
+		"OperatorPriority": 512,
+		"LeftType": "integer",
+		"RightType": "integer",
+		"EvaluatesTo": "integer"
+	},
+	{
+		"OperatorString": "/",
+		"OperatorPriority": 512,
+		"LeftType": "integer",
+		"RightType": "integer",
+		"EvaluatesTo": "integer"
+	},
+	{
+		"OperatorString": "<",
+		"OperatorPriority": 1024,
+		"LeftType": "integer",
+		"RightType": "integer",
+		"EvaluatesTo": "logical"
+	},
+	{
+		"OperatorString": ">",
+		"OperatorPriority": 1024,
+		"LeftType": "integer",
+		"RightType": "integer",
+		"EvaluatesTo": "logical"
+	},
+	{
+		"OperatorString": "==",
+		"OperatorPriority": 1024,
+		"LeftType": "integer",
+		"RightType": "integer",
+		"EvaluatesTo": "logical"
+	},
+
+
+
+	{
+		"OperatorString": "+",
+		"OperatorPriority": 768,
+		"LeftType": "integer",
+		"RightType": "float",
+		"EvaluatesTo": "float"
+	},
+	{
+		"OperatorString": "-",
+		"OperatorPriority": 768,
+		"LeftType": "integer",
+		"RightType": "float",
+		"EvaluatesTo": "float"
+	},
+	{
+		"OperatorString": "*",
+		"OperatorPriority": 512,
+		"LeftType": "integer",
+		"RightType": "float",
+		"EvaluatesTo": "float"
+	},
+	{
+		"OperatorString": "/",
+		"OperatorPriority": 512,
+		"LeftType": "integer",
+		"RightType": "float",
+		"EvaluatesTo": "float"
+	},
+	{
+		"OperatorString": "<",
+		"OperatorPriority": 1024,
+		"LeftType": "integer",
+		"RightType": "float",
+		"EvaluatesTo": "logical"
+	},
+	{
+		"OperatorString": ">",
+		"OperatorPriority": 1024,
+		"LeftType": "integer",
+		"RightType": "float",
+		"EvaluatesTo": "logical"
+	},
+	{
+		"OperatorString": "==",
+		"OperatorPriority": 1024,
+		"LeftType": "integer",
+		"RightType": "float",
+		"EvaluatesTo": "logical"
 	}
+
 ]

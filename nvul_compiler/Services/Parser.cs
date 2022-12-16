@@ -40,7 +40,7 @@ namespace nvul_compiler.Services
 
 			this._operatorsByPriorityDescending = this._configuration.Operators.OrderByDescending(x => x.OperatorPriority).ToList();
 			this._operatorsEvaluator = new(false, false);
-			this._operatorsByPriorityDescending.ForEach(x => this._operatorsEvaluator.AddOperator(x.OperatorString, (x,y) => 0, x.OperatorPriority));
+			this._operatorsByPriorityDescending.ForEach(x => { try { this._operatorsEvaluator.AddOperator(x.OperatorString, (x, y) => 0, x.OperatorPriority); } catch { } });
 			this._configuration.NvulFunctions.ToList().ForEach(x => this._operatorsEvaluator.AddFunction(x.FunctionName, (y) => 0));
 		}
 
@@ -166,10 +166,10 @@ namespace nvul_compiler.Services
 			{
 				throw new ArgumentException("There is characters left after parsing cycle childs.");
 			}
-			else if (cycleOperator.Type.Equals("conditionalOperator"))
-			{
-				return false;
-			}
+			//else if (cycleOperator.Type.Equals("conditionalOperator"))
+			//{
+			//	return false;
+			//}
 
 			var conditionNode = ParseLine(line.Substring(conditionNodeStartIndex + 1, conditionNodeEndIndex - conditionNodeStartIndex - 1).Trim());
 			var childLines = ParseNvulCode(line.Substring(childNodeStartIndex + 1, childNodeEndIndex - childNodeStartIndex - 1).Trim());
@@ -240,7 +240,7 @@ namespace nvul_compiler.Services
 			Node = null;
 
 			int firstOpenIndex = line.IndexOf('(');
-			string callName = line.Substring(0,firstOpenIndex);
+			string callName = line.Substring(0, firstOpenIndex);
 			int lastDotBeforeOpeningIndex = callName.LastIndexOf('.');
 			bool isStaticCall = lastDotBeforeOpeningIndex == -1;
 
@@ -327,7 +327,7 @@ namespace nvul_compiler.Services
 				{
 					i = FindBalancingBracketIndex(nvulCode, i);
 				}
-				else if (nvulCode[i] == ';' || i==(nvulCode.Length-1))
+				else if (nvulCode[i] == ';' || i == (nvulCode.Length - 1))
 				{
 					result.Add(new IndexRange(lastStart, i - lastStart));
 					lastStart = i + 1;

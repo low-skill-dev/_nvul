@@ -2,7 +2,21 @@
 	{
 		"FunctionName": "Print",
 		"AliasName": "напечатать",
+		"EvaluatesTo": null,
 		"ApplicableTypes": [ "matrix" ],
 		"Arguments": null
+	},
+	{
+		"FunctionName": "IsNumbersNotEqual",
+		"AliasName": "неРавны",
+		"EvaluatesTo": "logical",
+		"ApplicableTypes": null,
+		"Arguments": {
+			"ParametersTypes": [ "float", "float" ],
+			"ParametersDescription": [
+				"The first",
+				"The second"
+			]
+		}
 	}
 ]
