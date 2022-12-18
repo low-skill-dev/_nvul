@@ -78,6 +78,12 @@ namespace nvul_compiler.Services
 		{
 			Node = null;
 
+			var indexOfOp = line.IndexOf('=');
+			if(indexOfOp!=-1 && this._configuration.Operators.Any(x=> _operatorsEvaluator.isOnThisIndex(line, x.OperatorString, indexOfOp)))
+			{
+				return false;
+			}
+
 			var parts = line.Split('=', 2, StringSplitOptions.RemoveEmptyEntries);
 			if (parts.Length != 2) return false; // name = val.
 
@@ -87,7 +93,7 @@ namespace nvul_compiler.Services
 			{
 				return false;
 				throw new Exception($"Variable name {parts[0]} is not allowed. Variable name must start with letter and may contain only letters or digits.");
-				return true;
+				//return true;
 			}
 
 			Node = new AssignmentNode(varName, ParseLine(varVal));
@@ -164,7 +170,7 @@ namespace nvul_compiler.Services
 
 			if (childNodeEndIndex != line.Length - 1 && cycleOperator.Type.Equals("cycleOperator"))
 			{
-				throw new ArgumentException("There is characters left after parsing cycle childs.");
+				//throw new ArgumentException("There is characters left after parsing cycle childs.");
 			}
 			//else if (cycleOperator.Type.Equals("conditionalOperator"))
 			//{
@@ -216,6 +222,23 @@ namespace nvul_compiler.Services
 
 			return false;
 		}
+		protected bool IsBooleanLiteralString(string line, out BoolLiteral? Node)
+		{
+			Node = null;
+
+			if (line.Equals("true") || line.Equals("истина"))
+			{
+				Node = new BoolLiteral(true);
+				return true;
+			}
+			if (line.Equals("false") || line.Equals("ложь"))
+			{
+				Node = new BoolLiteral(false);
+				return true;
+			}
+
+			return false;
+		}
 
 		protected bool IsVariableRefString(string line, out VariableRefNode? Node)
 		{
@@ -240,6 +263,8 @@ namespace nvul_compiler.Services
 			Node = null;
 
 			int firstOpenIndex = line.IndexOf('(');
+			if (firstOpenIndex == -1) return false;
+
 			string callName = line.Substring(0, firstOpenIndex);
 			int lastDotBeforeOpeningIndex = callName.LastIndexOf('.');
 			bool isStaticCall = lastDotBeforeOpeningIndex == -1;
@@ -297,17 +322,19 @@ namespace nvul_compiler.Services
 					return ParseLine(nvulCode.Substring(1, nvulCode.Length - 2));
 			}
 
-
+			// Порядок проверки важен! 
 			if (IsDeclarationString(nvulCode, out var declarNode))
 				return declarNode!;
-			if (IsAssignmentString(nvulCode, out var assignNode))
-				return assignNode!;
 			if (IsCycleOrSimpleConditionalString(nvulCode, out var cycleNode))
 				return cycleNode!;
+			if (IsAssignmentString(nvulCode, out var assignNode))
+				return assignNode!;
 			if (IsOperatorString(nvulCode, out var operNode))
 				return operNode!;
 			if (IsNumericLiteralString(nvulCode, out var numLiteral))
 				return numLiteral!;
+			if(IsBooleanLiteralString(nvulCode,out var boolLiteral))
+				return boolLiteral!;
 			if (IsVariableRefString(nvulCode, out var variableRefNode))
 				return variableRefNode!;
 			if (IsFunctionCallString(nvulCode, out var funcCallNode))
@@ -317,35 +344,42 @@ namespace nvul_compiler.Services
 			throw new ArgumentException($"Could not determinate the type of expression \'{nvulCode}\'");
 		}
 
-		public List<IndexRange> FindTopLevelLines(string nvulCode)
+		public IEnumerable<IndexRange> FindTopLevelLines(string nvulCode)
 		{
 			var result = new List<IndexRange>();
 			int lastStart = 0;
-			for (int i = 0; i < nvulCode.Length; i++)
+			int i=0;
+			for (; i < nvulCode.Length; i++)
 			{
 				if (opening.Contains(nvulCode[i]))
 				{
 					i = FindBalancingBracketIndex(nvulCode, i);
 				}
-				else if (nvulCode[i] == ';' || i == (nvulCode.Length - 1))
+				else if (nvulCode[i] == ';')
 				{
-					result.Add(new IndexRange(lastStart, i - lastStart));
+					yield return new IndexRange(lastStart, i - lastStart);
 					lastStart = i + 1;
 				}
 			}
-			return result;
+
+			if (nvulCode.Last() != ';')
+			{
+				yield return new IndexRange(lastStart, nvulCode.Length - lastStart);
+			}
+
+			yield break;
 		}
 
 		public IEnumerable<ICodeNode> ParseNvulCode(string nvulCode)
 		{
-			List<ICodeNode> result = new List<ICodeNode>();
+			if (string.IsNullOrEmpty(nvulCode)) yield break;
 
 			foreach (var ln in FindTopLevelLines(nvulCode))
 			{
-				result.Add(ParseLine(nvulCode.Substring(ln.Start, ln.Count).Trim()));
+				yield return ParseLine(nvulCode.Substring(ln.Start, ln.Count).Trim());
 			}
 
-			return result;
+			yield break;
 		}
 	}
 }

@@ -250,7 +250,7 @@ namespace nvul_compiler.Services
 
 		internal bool isOnThisIndex(string orig, string search, int startIndex)
 		{
-			if (orig.Length < (startIndex + search.Length)) return false;
+			if ((orig.Length-1) < (startIndex + search.Length)) return false;
 
 			for (int i = 0; i < search.Length; i++)
 				if (orig[startIndex + i] != search[i]) return false;

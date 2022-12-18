@@ -57,7 +57,7 @@ namespace nvul_compiler.Services
 
 			if (this.FatherContext is null) yield break;
 
-			foreach (var varCtx in this.FatherContext.VariablesContext) yield return varCtx;
+			foreach (var varCtx in this.FatherContext.GetVariablesContextsRecursively()) yield return varCtx;
 		}
 
 		public void AddVariable(string varName, string varType)
@@ -105,7 +105,7 @@ namespace nvul_compiler.Services
 		 * Например, выражение внутри условного оператора должно быть валидироно на
 		 * возвращение типа logical (boolean у нормальных людей).
 		 */
-		public string? GetResultingType(ICodeNode node, CodeContext? currentContext)
+		public string? ValidateUsageAndGetResultingType(ICodeNode node, CodeContext? currentContext)
 		{
 			// Ноды, которые не имеют возвращаемого типа
 			if (node is DeclarationNode ||
@@ -135,8 +135,8 @@ namespace nvul_compiler.Services
 			if (node is OperatorNode)
 			{
 				var realNode = (OperatorNode)node;
-				var leftResultingType = GetResultingType(realNode.Left, currentContext);
-				var rightResultingType = GetResultingType(realNode.Right, currentContext);
+				var leftResultingType = ValidateUsageAndGetResultingType(realNode.Left, currentContext);
+				var rightResultingType = ValidateUsageAndGetResultingType(realNode.Right, currentContext);
 
 
 				/* ноды-операнды не могут быть исполняемыми командами без возвращаемого значения
@@ -182,7 +182,7 @@ namespace nvul_compiler.Services
 			if (node is FunctionCallNode)
 			{
 				var realNode = (FunctionCallNode)node;
-				var callParamsTypes = realNode.Arguments.Select(x => GetResultingType(x, currentContext));
+				var callParamsTypes = realNode.Arguments.Select(x => ValidateUsageAndGetResultingType(x, currentContext));
 
 				var found = this._configuration.NvulFunctions.FirstOrDefault(x =>
 					(x.Arguments ?? new NvulFunctionParameters(Array.Empty<string>(), Array.Empty<string>())).ParametersTypes.SequenceEqual(callParamsTypes));
@@ -213,6 +213,11 @@ namespace nvul_compiler.Services
 					throw new ArgumentException($"Variable with name \'{((VariableRefNode)node).VariableName}\' was not declared.");
 				}
 
+				if(found.LastAssignedValue is null)
+				{
+					throw new NullReferenceException($"You are trying to use a variable with name \'{found.Name}\' which was never assigned.");
+				}
+
 				return found.Type;
 			}
 
@@ -224,7 +229,7 @@ namespace nvul_compiler.Services
 		[Obsolete]
 		public bool CanBeConvertedToTheType(ICodeNode node, string targetType, CodeContext? context = null)
 		{
-			var resultingType = GetResultingType(node, context);
+			var resultingType = ValidateUsageAndGetResultingType(node, context);
 			if(resultingType is null)
 			{
 				throw new ArgumentException("Passed node has no resulting type, so cannot be converted to any.");
@@ -262,7 +267,7 @@ namespace nvul_compiler.Services
 					throw new ArgumentException($"Cannot assign variable with name \'{realNode.VariableName}\' because it was not declared.");
 				}
 
-				var assignedType = GetResultingType(realNode.AssignedValue, context);
+				var assignedType = ValidateUsageAndGetResultingType(realNode.AssignedValue, context);
 
 				if(assignedType is null)
 				{
@@ -282,10 +287,14 @@ namespace nvul_compiler.Services
 			{
 				var realNode = (INodeWithConditionAndChilds)node;
 
-				var conditionResultingType = GetResultingType(realNode.Condition,context);
-				if (conditionResultingType is null || !conditionResultingType.Equals("logical"))
+				var conditionResultingType = ValidateUsageAndGetResultingType(realNode.Condition,context);
+				if (conditionResultingType is null)
 				{
 					throw new ArgumentException("You are trying to use non-value expression as the condition.");
+				}
+				if(!conditionResultingType.Equals("logical"))
+				{
+					throw new ArgumentException("You are trying to use non-logical-value expression as the condition.");
 				}
 
 				var childs = realNode.Childs;
@@ -297,7 +306,7 @@ namespace nvul_compiler.Services
 
 			if(node is FunctionCallNode)
 			{
-				GetResultingType(node, context);
+				ValidateUsageAndGetResultingType(node, context);
 
 				return true;
 			}

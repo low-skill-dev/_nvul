@@ -11,6 +11,7 @@ using Xunit.Abstractions;
 using nvul_compiler.Models;
 using nvul_compiler.Models.CodeTree;
 using Newtonsoft.Json;
+using System.Xml.Linq;
 
 namespace nvul_compiler.tests.Services
 {
@@ -145,6 +146,7 @@ namespace nvul_compiler.tests.Services
 			var testString = "myFloat = myAnotherFloat1 + myAnotherFloat2";
 
 			var parsed = parser.ParseLine(testString);
+			_output.WriteLine(JsonConvert.SerializeObject(parsed, Formatting.Indented));
 
 			Assert.IsType<AssignmentNode>(parsed);
 			var result = (AssignmentNode)parsed;
@@ -244,6 +246,24 @@ namespace nvul_compiler.tests.Services
 
 			string json = JsonConvert.SerializeObject(parsed, Formatting.Indented);
 			_output.WriteLine(json);
+		}
+
+		[Fact]
+		public void CanParseCycleAfterDeclarationString()
+		{
+			var nodes = this.parser.ParseNvulCode("integer v1; while(v2==2) {  }");
+			_output.WriteLine(JsonConvert.SerializeObject(nodes, Formatting.Indented));
+
+			Assert.Equal(2, nodes.Count());
+
+			Assert.IsType<CycleNode>(nodes.Last());
+			var realNode = (CycleNode)nodes.Last();
+
+			Assert.Empty(realNode.Childs);
+			Assert.IsType<OperatorNode>(realNode.Condition);
+			var condNode = (OperatorNode)realNode.Condition;
+
+			Assert.IsType<VariableRefNode>(condNode.Left);
 		}
 
 		[Fact]

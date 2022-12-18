@@ -1,10 +1,10 @@
 [
   {
-    "from": "integer",
-    "implicitTo": "float"
+    "Vartype": "integer",
+    "ImplicitTo": "float"
   },
   {
-    "from": "integer",
-    "implicitTo": "timestamp"
+    "Vartype": "integer",
+    "ImplicitTo": "timestamp"
   }
 ]
