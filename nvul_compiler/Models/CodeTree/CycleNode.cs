@@ -1,4 +1,5 @@
-﻿using System;
+﻿using nvul_compiler.Models.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,11 +11,13 @@ namespace nvul_compiler.Models.CodeTree
 	{
 		public ICodeNode Condition { get; set; }
 		public IEnumerable<ICodeNode> Childs { get; set; }
+		public NvulKeyword? NvulKeyword { get; set; }
 	}
 	public class CycleNode: INodeWithConditionAndChilds
 	{
 		public ICodeNode Condition { get; set; }
 		public IEnumerable<ICodeNode> Childs { get; set; }
+		public NvulKeyword? NvulKeyword { get; set; }
 
 		public CycleNode(ICodeNode condition, IEnumerable<ICodeNode> childs)
 		{

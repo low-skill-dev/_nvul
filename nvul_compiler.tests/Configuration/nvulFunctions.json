@@ -7,15 +7,72 @@
 		"Arguments": null
 	},
 	{
+		"FunctionName": "InputIntegerValue",
+		"AliasName": "ввестиЦелое",
+		"EvaluatesTo": "integer",
+		"ApplicableTypes": null,
+		"Arguments": null
+	},
+	{
+		"FunctionName": "InputFloatValue",
+		"AliasName": "ввестиДействительное",
+		"EvaluatesTo": "float",
+		"ApplicableTypes": null,
+		"Arguments": null
+	},
+	{
+		"FunctionName": "InputLogicalValue",
+		"AliasName": "ввестиЛогическое",
+		"EvaluatesTo": "logical",
+		"ApplicableTypes": null,
+		"Arguments": null
+	},
+	{
+		"FunctionName": "InputMatrixValue",
+		"AliasName": "ввестиЛогическое",
+		"EvaluatesTo": "matrix",
+		"ApplicableTypes": null,
+		"Arguments": {
+			"ParametersTypes": [ "integer" ],
+			"ParametersDescription": [
+				"Matrix side size"
+			]
+		},
+		"TranslationString": "InputMatrix"
+	},
+	{
+		"FunctionName": "PrintMatrixValue",
+		"AliasName": "вывестиЛогическое",
+		"EvaluatesTo": null,
+		"ApplicableTypes": null,
+		"Arguments": {
+			"ParametersTypes": [ "matrix" ],
+			"ParametersDescription": [
+				"Matrix to print"
+			]
+		}
+	},
+	{
+		"FunctionName": "PrintNumericValue",
+		"AliasName": "вывестиЧисловое",
+		"EvaluatesTo": null,
+		"ApplicableTypes": null,
+		"Arguments": {
+			"ParametersTypes": [ "float" ],
+			"ParametersDescription": [
+				""
+			]
+		}
+	},
+	{
 		"FunctionName": "IsNumbersNotEqual",
 		"AliasName": "неРавны",
 		"EvaluatesTo": "logical",
 		"ApplicableTypes": null,
 		"Arguments": {
-			"ParametersTypes": [ "float", "float" ],
+			"ParametersTypes": [ "float","float" ],
 			"ParametersDescription": [
-				"The first",
-				"The second"
+				"", ""
 			]
 		}
 	}

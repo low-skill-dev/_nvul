@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 
 namespace nvul_compiler.Services
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Diagnostics;
-	using System.Linq;
-	using System.Runtime.CompilerServices;
-	using System.Text.RegularExpressions;
-
 	/* В выражении могут быть использованы целые числа, вещественные числа, арифметические операторы: +,-,*,/, 
 	* скобки (), а также функции и операторы в соответствии с вариантом. 
 	* 18.   sin
@@ -237,7 +236,7 @@ namespace nvul_compiler.Services
 
 		/// <summary>
 		/// The default operators priority is: <br/>
-		/// '^^' = 10, <br/>
+		/// '^^' = 10, <br/>FASZZZ
 		/// '/' = '*' = 5, <br/>
 		/// '-' = '+' = 1.
 		/// </summary>

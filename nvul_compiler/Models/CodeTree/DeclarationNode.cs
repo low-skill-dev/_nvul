@@ -1,4 +1,5 @@
-﻿using System;
+﻿using nvul_compiler.Models.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ namespace nvul_compiler.Models.CodeTree
 	{
 		public string VariableType { get; set; }
 		public string VariableName { get; set; }
+		public NvulKeyword? NvulKeyword { get; set; }
 		public DeclarationNode(string variableType, string variableName)
 		{
 			this.VariableType = variableType;

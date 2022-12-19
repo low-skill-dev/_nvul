@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using nvul_compiler.Models.CodeTree;
 using nvul_compiler.Models.Configuration;
 using nvul_compiler.Services;
 using System;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit.Abstractions;
+using Xunit.Sdk;
 
 namespace nvul_compiler.tests.Services
 {
@@ -169,6 +171,44 @@ namespace nvul_compiler.tests.Services
 
 			Assert.Throws<NullReferenceException>(analyzeAction);
 			try { analyzeAction(); } catch (Exception ex) { _output.WriteLine(ex.ToString()); }
+		}
+
+		[Fact]
+		public void CanAcceptAssigningByFunction()
+		{
+			// should accept
+			var nodes = this.parser.ParseNvulCode("float f1; f1 = InputIntegerValue(); PrintNumericValue(f1); PrintNumericValue(InputIntegerValue());");
+			Assert.True(analyzer.AnalyzeNvulNodes(nodes));
+
+			// should reject (type inconsist)
+			nodes = this.parser.ParseNvulCode("logical l1; l1 = InputLogicalValue(); PrintNumericValue(l1);");
+			string json = JsonConvert.SerializeObject(nodes, Formatting.Indented);
+			_output.WriteLine(json);
+
+			var analyzeAction = () => { this.analyzer.AnalyzeNvulNodes(nodes); };
+
+			Assert.Throws<ArgumentException>(analyzeAction);
+			try { analyzeAction(); } catch (Exception ex) { _output.WriteLine(ex.ToString()); }
+
+			// should reject (type inconsist)
+			nodes = this.parser.ParseNvulCode("PrintNumericValue(InputLogicalValue());");
+			json = JsonConvert.SerializeObject(nodes, Formatting.Indented);
+			_output.WriteLine(json);
+
+			analyzeAction = () => { this.analyzer.AnalyzeNvulNodes(nodes); };
+
+			Assert.Throws<ArgumentException>(analyzeAction);
+			try { analyzeAction(); } catch (Exception ex) { _output.WriteLine(ex.ToString()); }
+		}
+
+		[Fact]
+		public void CanDeterminateFunctionOverload()
+		{
+			var testString = "matrix mtx; mtx = InputMatrixValue(123);";
+			var parsed = parser.ParseNvulCode(testString).ToList();
+			analyzer.AnalyzeNvulNodes(parsed, new(null));
+			var assignedFunction = (FunctionCallNode)((AssignmentNode)parsed.Last()).AssignedValue;
+			Assert.NotNull(assignedFunction.NvulFunction);
 		}
 	}
 }

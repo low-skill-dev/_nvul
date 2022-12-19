@@ -58,18 +58,18 @@ namespace nvul_compiler.Services
 			var parts = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 			if (parts.Length != 2) return false; // type name;
 
-			var varTypes = _configuration.Keywords.Where(x => x.Type.Equals("vartype")).Select(x => x.Word);
-			var varType = varTypes.FirstOrDefault(t => parts[0].Equals(t));
-			if (varType is null) return false;
+			var varTypes = _configuration.Keywords.Where(x => x.Type.Equals("vartype"));
+			var found = varTypes.FirstOrDefault(t => parts[0].Equals(t.Word));
+			if (found is null) return false;
+			var varType = found.Word;
 
 			var varName = parts[1];
 			if (!VariableNameIsOk(varName))
 			{
 				throw new Exception($"Variable name {parts[1]} is not allowed. Variable name must start with letter and may contain only letters or digits.");
-				//return true;
 			}
 
-			Node = new DeclarationNode(varType, varName);
+			Node = new DeclarationNode(varType, varName) { NvulKeyword = found };
 
 			return true;
 		}
@@ -184,7 +184,11 @@ namespace nvul_compiler.Services
 				Node = new CycleNode(conditionNode, childLines);
 			else if (cycleOperator.Type.Equals("conditionalOperator"))
 				Node = new ConditionNode(conditionNode, childLines);
+			else
+				throw new NotImplementedException($"Unknown operator type \'{cycleOperator.Type}\'.");
+	
 
+			Node.NvulKeyword = cycleOperator;
 			return true;
 		}
 
@@ -193,14 +197,24 @@ namespace nvul_compiler.Services
 		protected bool IsOperatorString(string line, out OperatorNode? Node)
 		{
 			Node = null;
+			//var operatorIndex = _operatorsEvaluator.GetIndexOfFirstPriorTopOp(line, out var opLen);
 
-			var operatorIndex = _operatorsEvaluator.GetIndexOfFirstPriorTopOp(line, out var opLen);
-			if (operatorIndex is null) return false;
+			var operatorsIndexes = _operatorsEvaluator.GetIndexesOfTopLevelOperators(line, SortByPriority: true);
+			if (!operatorsIndexes.Any()) return false;
+			var startPrior = operatorsIndexes.First().Operation.Priority; 
+			// Взять последний из идущих подряд с начала операторов с
+			// одним приортетом
+			var foundOp = operatorsIndexes.TakeWhile(x => x.Operation.Priority == startPrior).Last();
+			var operatorIndex = foundOp.Index;
+			var opLen = foundOp.Operation.OperationString.Length;
+
+
+			//if (operatorIndex is null) return false;
 
 			Node = new OperatorNode(
-				ParseLine(line.Substring(0, operatorIndex.Value).Trim()),
-				ParseLine(line.Substring(operatorIndex.Value + opLen).Trim()),
-				line.Substring(operatorIndex.Value, opLen));
+				ParseLine(line.Substring(0, operatorIndex).Trim()),
+				ParseLine(line.Substring(operatorIndex + opLen).Trim()),
+				line.Substring(operatorIndex, opLen));
 
 			return true;
 		}

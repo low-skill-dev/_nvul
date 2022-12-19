@@ -13,8 +13,9 @@ namespace nvul_compiler.Models.Configuration
 		public string EvaluatesTo { get; set; }
 		public IList<string>? ApplicableTypes { get; set; }
 		public NvulFunctionParameters? Arguments { get; set; }
+		public string TranslationString { get; set; }
 
-		public NvulFunction(string functionName, string aliasName,string evaluatesTo, IList<string>? applicableTypes=null, NvulFunctionParameters? arguments=null)
+		public NvulFunction(string functionName, string aliasName,string evaluatesTo, IList<string>? applicableTypes = null,NvulFunctionParameters? arguments = null)
 		{
 			this.FunctionName = functionName;
 			this.AliasName = aliasName;

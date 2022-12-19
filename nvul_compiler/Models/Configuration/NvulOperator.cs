@@ -13,14 +13,16 @@ namespace nvul_compiler.Models.Configuration
 		public string LeftType { get; set; }
 		public string RightType { get; set; }
 		public string EvaluatesTo { get; set; }
+		public string TranslationString { get; set; }
 
-		public NvulOperator(string operatorString, int operatorPriority, string leftType, string rightType, string evaluatesTo)
+		public NvulOperator(string operatorString, int operatorPriority, string leftType, string rightType, string evaluatesTo, string translationString)
 		{
 			this.OperatorString = operatorString;
 			this.OperatorPriority = operatorPriority;
 			this.LeftType = leftType;
 			this.RightType = rightType;
 			this.EvaluatesTo = evaluatesTo;
+			this.TranslationString = translationString;
 		}
 	}
 }

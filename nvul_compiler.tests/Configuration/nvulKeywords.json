@@ -3,19 +3,22 @@
     "Word": "float",
     "Alias": "число",
     "Type": "vartype",
-    "CtorArguments": null
+    "CtorArguments": null,
+    "TranslationString": "double"
   },
   {
     "Word": "logical",
     "Alias": "логический",
     "Type": "vartype",
-    "CtorArguments": null
+    "CtorArguments": null,
+    "TranslationString": "bool"
   },
   {
     "Word": "integer",
     "Alias": "целое",
     "Type": "vartype",
-    "CtorArguments": null
+    "CtorArguments": null,
+    "TranslationString": "long"
   },
   {
     "Word": "charseq",
@@ -39,7 +42,8 @@
         "The first dimension of the matrix",
         "The second dimension of the matrix"
       ]
-    }
+    },
+    "TranslationString": "Matrix"
   },
   {
     "Word": "while",
@@ -48,7 +52,8 @@
     "CtorArguments": {
       "ParametersTypes": [ "logical" ],
       "ParametersDescription": [ "Condition" ]
-    }
+    },
+    "TranslationString": "while"
   },
   {
     "Word": "if",
@@ -57,7 +62,8 @@
     "CtorArguments": {
       "ParametersTypes": [ "logical" ],
       "ParametersDescription": [ "Condition" ]
-    }
+    },
+    "TranslationString": "if"
   },
   {
     "Word": "byte",

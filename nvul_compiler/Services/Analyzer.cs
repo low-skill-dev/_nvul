@@ -21,7 +21,7 @@ namespace nvul_compiler.Services
 		public string Type { get; protected set; }
 		public ICodeNode? LastAssignedValue { get; set; }
 
-		public VariableContext(string name, string type, ICodeNode? lastAssignedValue=null)
+		public VariableContext(string name, string type, ICodeNode? lastAssignedValue = null)
 		{
 			this.Name = name;
 			this.Type = type;
@@ -72,8 +72,10 @@ namespace nvul_compiler.Services
 			if (found is null) throw new ArgumentOutOfRangeException($"Variable with name \'{varName}\' not found.");
 			found.LastAssignedValue = value;
 		}
+
 		public void AssignVariable(AssignmentNode node) => this.AssignVariable(node.VariableName, node.AssignedValue);
 
+		[Obsolete]
 		public CodeContext CreateChild() => new CodeContext(this);
 	}
 	internal class Analyzer
@@ -89,6 +91,8 @@ namespace nvul_compiler.Services
 		 */
 		public bool CanBeImplicitlyConverted(string fromType, string toType)
 		{
+			if (fromType.Equals(toType)) return true;
+
 			return this._configuration.Implicits
 				.FirstOrDefault(x => x.Vartype.Equals(fromType) && x.ImplicitTo.Equals(toType)) is not null;
 		}
@@ -154,11 +158,14 @@ namespace nvul_compiler.Services
 
 				// Если удалось найти оператор, выполняющий операции с данными типами.
 				var exactMatch = this._configuration.Operators.FirstOrDefault(x =>
+					x.OperatorString.Equals(realNode.Operator)
+					&&
 					x.LeftType.Equals(leftResultingType)
 					&&
 					x.RightType.Equals(rightResultingType)
 					);
 
+				realNode.NvulOperator = exactMatch;
 				if (exactMatch is not null)
 					return exactMatch.EvaluatesTo;
 
@@ -166,11 +173,15 @@ namespace nvul_compiler.Services
 				 * к которым можно скрытно привести данные типы.
 				 */
 				var implicitMatch = this._configuration.Operators.FirstOrDefault(x =>
+					x.OperatorString.Equals(realNode.Operator)
+					&&
 					GetAllImplicitVariants(leftResultingType).Any(t => x.LeftType.Equals(t))
 					&&
 					GetAllImplicitVariants(rightResultingType).Any(t => x.RightType.Equals(t))
 					);
 
+
+				realNode.NvulOperator = implicitMatch;
 				if (implicitMatch is not null)
 					return implicitMatch.EvaluatesTo;
 
@@ -182,15 +193,33 @@ namespace nvul_compiler.Services
 			if (node is FunctionCallNode)
 			{
 				var realNode = (FunctionCallNode)node;
-				var callParamsTypes = realNode.Arguments.Select(x => ValidateUsageAndGetResultingType(x, currentContext));
+				var callParamsTypes = realNode.Arguments.Select(x => ValidateUsageAndGetResultingType(x, currentContext)).ToList();
 
-				var found = this._configuration.NvulFunctions.FirstOrDefault(x =>
-					(x.Arguments ?? new NvulFunctionParameters(Array.Empty<string>(), Array.Empty<string>())).ParametersTypes.SequenceEqual(callParamsTypes));
+				var foundByName = this._configuration.NvulFunctions.Where(x => x.FunctionName.Equals(realNode.FunctionName));
+				var found = foundByName.FirstOrDefault(x =>
+				{
+					var types = (x.Arguments ?? new NvulFunctionParameters(Array.Empty<string>(), Array.Empty<string>())).ParametersTypes;
 
-				if(found is null)
+					if (callParamsTypes.Count != types.Count) return false;
+
+					for (int i = 0; i < types.Count; i++)
+					{
+						if (callParamsTypes[i] == null || !CanBeImplicitlyConverted(callParamsTypes[i]!, types[i]))
+							return false;
+					}
+
+					return true;
+				});
+
+				//var found = this._configuration.NvulFunctions.Where(x=> x.FunctionName.Equals(realNode.FunctionName)).FirstOrDefault(x => 
+				//	(x.Arguments ?? new NvulFunctionParameters(Array.Empty<string>(), Array.Empty<string>())).ParametersTypes.SequenceEqual(callParamsTypes));
+
+				if (found is null)
 				{
 					throw new ArgumentException($"There is no function exists with name \'{realNode.FunctionName}\' and parameters types [{string.Join(",", callParamsTypes)}].");
 				}
+
+				realNode.NvulFunction = found;
 
 				return found.EvaluatesTo;
 			}
@@ -207,15 +236,15 @@ namespace nvul_compiler.Services
 
 				var realNode = (VariableRefNode)node;
 				var found = currentContext.GetVariablesContextsRecursively().FirstOrDefault(x => x.Name.Equals(realNode.VariableName));
-				
+
 				if (found is null)
 				{
 					throw new ArgumentException($"Variable with name \'{((VariableRefNode)node).VariableName}\' was not declared.");
 				}
 
-				if(found.LastAssignedValue is null)
+				if (found.LastAssignedValue is null)
 				{
-					throw new NullReferenceException($"You are trying to use a variable with name \'{found.Name}\' which was never assigned.");
+					throw new NullReferenceException($"You are trying to use a variable with name \'{found.Name}\' which was not assigned.");
 				}
 
 				return found.Type;
@@ -230,7 +259,7 @@ namespace nvul_compiler.Services
 		public bool CanBeConvertedToTheType(ICodeNode node, string targetType, CodeContext? context = null)
 		{
 			var resultingType = ValidateUsageAndGetResultingType(node, context);
-			if(resultingType is null)
+			if (resultingType is null)
 			{
 				throw new ArgumentException("Passed node has no resulting type, so cannot be converted to any.");
 			}
@@ -246,10 +275,10 @@ namespace nvul_compiler.Services
 		{
 			if (node is null) throw new ArgumentNullException("Internal analyzer error."); // should be never thrown
 
-			if(node is DeclarationNode)
+			if (node is DeclarationNode)
 			{
 				var realNode = (DeclarationNode)node;
-				if(context.GetVariablesContextsRecursively().Any(x => x.Name.Equals(realNode.VariableName)))
+				if (context.GetVariablesContextsRecursively().Any(x => x.Name.Equals(realNode.VariableName)))
 				{
 					throw new ArgumentException($"Variable with name \'{realNode.VariableName}\' was already declared.");
 				}
@@ -257,24 +286,25 @@ namespace nvul_compiler.Services
 
 				return true;
 			}
-			if(node is AssignmentNode)
+			if (node is AssignmentNode)
 			{
 				var realNode = (AssignmentNode)node;
-				var found = context.GetVariablesContextsRecursively().FirstOrDefault(x=> x.Name.Equals(realNode.VariableName));
+				var found = context.GetVariablesContextsRecursively().FirstOrDefault(x => x.Name.Equals(realNode.VariableName));
 
-				if(found is null)
+				if (found is null)
 				{
 					throw new ArgumentException($"Cannot assign variable with name \'{realNode.VariableName}\' because it was not declared.");
 				}
 
 				var assignedType = ValidateUsageAndGetResultingType(realNode.AssignedValue, context);
 
-				if(assignedType is null)
+				if (assignedType is null)
 				{
 					throw new ArgumentException($"You are trying to assign non-value type to the variable with name \'{found.Name}\'");
 				}
 
-				if(found.Type != assignedType && !GetAllImplicitVariants(assignedType).Any(x=> x.Equals(found.Type))){
+				if (found.Type != assignedType && !GetAllImplicitVariants(assignedType).Any(x => x.Equals(found.Type)))
+				{
 					throw new ArgumentException($"You are trying to assign value of type \'{assignedType}\' to the variable with name \'{realNode.VariableName}\' " +
 						$"and type {found.Type}. No implicit conversion exists.");
 				}
@@ -283,16 +313,16 @@ namespace nvul_compiler.Services
 
 				return true;
 			}
-			if(node is INodeWithConditionAndChilds)
+			if (node is INodeWithConditionAndChilds)
 			{
 				var realNode = (INodeWithConditionAndChilds)node;
 
-				var conditionResultingType = ValidateUsageAndGetResultingType(realNode.Condition,context);
+				var conditionResultingType = ValidateUsageAndGetResultingType(realNode.Condition, context);
 				if (conditionResultingType is null)
 				{
 					throw new ArgumentException("You are trying to use non-value expression as the condition.");
 				}
-				if(!conditionResultingType.Equals("logical"))
+				if (!conditionResultingType.Equals("logical"))
 				{
 					throw new ArgumentException("You are trying to use non-logical-value expression as the condition.");
 				}
@@ -304,19 +334,19 @@ namespace nvul_compiler.Services
 				return true;
 			}
 
-			if(node is FunctionCallNode)
+			if (node is FunctionCallNode)
 			{
 				ValidateUsageAndGetResultingType(node, context);
 
 				return true;
 			}
 
-			if(node is ILiteralNode)
+			if (node is ILiteralNode)
 			{
 				throw new ArgumentException("Literals cannot exists as a self parts of the code.");
 			}
 
-			if(node is OperatorNode)
+			if (node is OperatorNode)
 			{
 				throw new ArgumentException("Operators cannot exists as a self parts of the code.");
 			}
@@ -329,13 +359,13 @@ namespace nvul_compiler.Services
 			throw new NotImplementedException($"The passed code node has an unkown type: {((object)node).GetType().FullName}.");
 		}
 
-		public bool AnalyzeNvulNodes(IEnumerable<ICodeNode> nodes, CodeContext? fatherContext=null)
+		public bool AnalyzeNvulNodes(IEnumerable<ICodeNode> nodes, CodeContext? fatherContext = null)
 		{
 			CodeContext codeCtx = new(fatherContext);
 
 			var result = true;
 
-			foreach(var node in nodes) result = result && AnalyzeNodeAndUpdateContext(node, codeCtx);
+			foreach (var node in nodes) result = result && AnalyzeNodeAndUpdateContext(node, codeCtx);
 
 			return result;
 		}

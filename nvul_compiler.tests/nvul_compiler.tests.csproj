@@ -44,7 +44,7 @@
 		<Content Include="Configuration\nvulOperators.json">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
-		<Content Include="Configuration\nVulTranslations.json">
+		<Content Include="Configuration\nvulTranslations.json">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Configuration\nvulWordTypes.json">
