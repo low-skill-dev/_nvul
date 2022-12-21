@@ -1,22 +1,31 @@
-﻿using nvul_compiler.Models.CodeTree;
+﻿using Newtonsoft.Json;
+using nvul_compiler.Models.CodeTree;
 using nvul_compiler.Models.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 [assembly: InternalsVisibleTo("nvul_compiler.tests")]
 namespace nvul_compiler.Services
 {
+	/* Задача парсера - построить дерево кода.
+	 * В рамках принципа единственной ответственности осуществляется 
+	 * вынужденное частичное дублирование функционала анализатора - 
+	 * в части проверки объявления переменной, но для других целей.
+	 */
 	internal class Parser
 	{
+		/* Структура служит для выделения последовательности символов в строке.
+		 */
 		internal struct IndexRange
 		{
-			public int Start;
-			public int Count;
+			public readonly int Start;
+			public readonly int Count;
 			public int End => Start + Count;
 
 			public IndexRange(int start, int count)
@@ -26,138 +35,128 @@ namespace nvul_compiler.Services
 			}
 		}
 
-		public char lineDelimiter { get; protected set; } = ';';
-
+		public const char LineDelimiter = ';';
 		protected readonly NvulConfiguration _configuration;
-		protected Dictionary<ExpressionTypes, Regex> _regexForExpressionType = new();
+
+		protected readonly List<NvulKeyword> _varTypes;
+		protected readonly List<NvulKeyword> _cycleAndConditionalOperators;
+		protected readonly List<NvulOperator> _operatorsByPriorityDescending;
+		protected readonly StringEvaluator _operatorsEvaluator;
 
 		public Parser(NvulConfiguration configuration)
 		{
 			this._configuration = configuration;
 
-			//var varDeclarationRegex = new Regex(@"(?<=\s*)(TYPENAMEREPLACE)\s+([A-Za-zА-Яа-я]+[A-Za-zА-Яа-я1-9]*)(?=\s*)"
-			//	.Replace(@"TYPENAMEREPLACE", string.Join('|', _configuration.Keywords.Where(x => x.Type.Equals("vartype")))));
-
+			/* Для парсинга операторов и функций используется функционал ранее написанного класса,
+			 * не предназначенного для этого изначально. В идеальном случае требуется написать фасад.
+			 * Но у нас нет времени на реализацию паттернов. Технический долг не достигнет критических
+			 * значений до выкидывания данного проекта.
+			 */
 			this._operatorsByPriorityDescending = this._configuration.Operators.OrderByDescending(x => x.OperatorPriority).ToList();
 			this._operatorsEvaluator = new(false, false);
 			this._operatorsByPriorityDescending.ForEach(x => { try { this._operatorsEvaluator.AddOperator(x.OperatorString, (x, y) => 0, x.OperatorPriority); } catch { } });
 			this._configuration.NvulFunctions.ToList().ForEach(x => this._operatorsEvaluator.AddFunction(x.FunctionName, (y) => 0));
+
+			// Некоторые коллекции энумеруются заранее для устранения множественного повторения данного процесса.
+			this._varTypes = this._configuration.Keywords.Where(x => x.Type.Equals("vartype")).ToList();
+			this._cycleAndConditionalOperators = this._configuration.Keywords
+				.Where(x => x.Type.Equals("cycleOperator") || x.Type.Equals("conditionalOperator")).ToList();
 		}
 
-		protected const string varNameRegexGroupName = "VARNAMEGROUPNAME";
-		protected const string varValueRegexGroupName = "ASSIGNEDVALUE";
+		// Имена перменных начинаются на букву, продолжаются на букву или цифру.
+		protected bool VariableNameIsOk(string varname) => !string.IsNullOrEmpty(varname)
+			&& char.IsLetter(varname[0])
+			&& varname.Skip(1).All(x => char.IsLetterOrDigit(x));
 
-
-		//	protected readonly Regex varDeclarationRegex;
-		protected bool VariableNameIsOk(string varname) => varname.Length > 0 && char.IsLetter(varname[0]) && varname.All(x => char.IsLetterOrDigit(x));
-
-		protected bool IsDeclarationString(string line, out DeclarationNode? Node)
+		// Строка соотвествует синтаксису декларации 'type name;'.
+		protected bool IsDeclarationString(string line, out DeclarationNode? Node, IList<string>? declaredNames = null)
 		{
 			Node = null;
 
 			var parts = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 			if (parts.Length != 2) return false; // type name;
 
-			var varTypes = _configuration.Keywords.Where(x => x.Type.Equals("vartype"));
-			var found = varTypes.FirstOrDefault(t => parts[0].Equals(t.Word));
-			if (found is null) return false;
-			var varType = found.Word;
-
+			var varType = parts[0];
 			var varName = parts[1];
+
+			var foundType = _varTypes.FirstOrDefault(t => varType.Equals(t.Word));
+			if (foundType is null) return false;
+
 			if (!VariableNameIsOk(varName))
-			{
-				throw new Exception($"Variable name {parts[1]} is not allowed. Variable name must start with letter and may contain only letters or digits.");
-			}
+				throw new Exception($"Variable name {varName} is not allowed. Variable name must start with letter and may contain only letters or digits.");
 
-			Node = new DeclarationNode(varType, varName) { NvulKeyword = found };
-
+			Node = new DeclarationNode(varType, varName) { NvulKeyword = foundType };
+			declaredNames?.Add(varName);
 			return true;
 		}
 
-		protected bool IsAssignmentString(string line, out AssignmentNode? Node)
+		// Строка соответствует синтаксису присвоения 'name = value;'.
+		protected bool IsAssignmentString(string line, out AssignmentNode? Node, IList<string>? declaredNames = null)
 		{
 			Node = null;
 
 			var indexOfOp = line.IndexOf('=');
-			if(indexOfOp!=-1 && this._configuration.Operators.Any(x=> _operatorsEvaluator.isOnThisIndex(line, x.OperatorString, indexOfOp)))
-			{
+			// Удостовериться, что не существует оператора, с таким же началом, например == (оператор сравнения).
+			if (indexOfOp == -1 || this._configuration.Operators.Any(x => _operatorsEvaluator.isOnThisIndex(line, x.OperatorString, indexOfOp)))
 				return false;
-			}
 
 			var parts = line.Split('=', 2, StringSplitOptions.RemoveEmptyEntries);
-			if (parts.Length != 2) return false; // name = val.
+			if (parts.Length != 2) return false; // name = value;
 
 			var varName = parts[0].Trim();
 			var varVal = parts[1].Trim();
+
 			if (!VariableNameIsOk(varName))
-			{
 				return false;
-				throw new Exception($"Variable name {parts[0]} is not allowed. Variable name must start with letter and may contain only letters or digits.");
-				//return true;
-			}
 
-			Node = new AssignmentNode(varName, ParseLine(varVal));
-
+			Node = new AssignmentNode(varName, ParseLine(varVal, declaredNames));
 			return true;
 		}
 
 		protected readonly char[] opening = new char[] { '(', '[', '{' };
 		protected readonly char[] closing = new char[] { ')', ']', '}' };
-
 		protected int FindBalancingBracketIndex(string line, int openIndex)
 		{
 			if (!(opening.Contains(line[openIndex])))
 				throw new ArgumentException("Opening bracket not found on index.");
 
 			Stack<char> Brackets = new();
-
 			for (int i = openIndex; i < line.Length; i++)
 			{
 				if (opening.Contains(line[i]))
 				{
 					Brackets.Push(line[i]);
+					continue;
 				}
-				var clbr = (closing as IList<char>).IndexOf(line[i]);
-				if (clbr != -1)
+				var closingBrId = (closing as IList<char>).IndexOf(line[i]);
+				if (closingBrId != -1)
 				{
-					var opbr = (opening as IList<char>).IndexOf(Brackets.Peek());
-					if (clbr != opbr)
-					{
-						goto M;
-					}
-					else
-					{
-						Brackets.Pop();
-					}
+					var openingBrId = (opening as IList<char>).IndexOf(Brackets.Peek());
+					if (closingBrId != openingBrId) break;
+					else Brackets.Pop();
+					if (Brackets.Count == 0) return i;
 				}
-
-				if (Brackets.Count == 0) return i;
 			}
 
-		M:
 			throw new ArgumentException($"Cannot find balancing bracket for \'{Brackets.Peek()}\' in the expression \'{line}\'");
 		}
 
-		protected bool IsCycleOrSimpleConditionalString(string line, out INodeWithConditionAndChilds? Node)
+		// Строка соответствует синтаксису 'operator(condition){childs}'.
+		protected bool IsCycleOrSimpleConditionalString(string line, out INodeWithConditionAndChilds? Node, IList<string>? declaredNames = null)
 		{
 			Node = null;
 
-			var cycleOperators = this._configuration.Keywords.Where(x => x.Type.Equals("cycleOperator") || x.Type.Equals("conditionalOperator"));
-			var cycleOperator = cycleOperators.FirstOrDefault(x => line.StartsWith(x.Word));
-			if (cycleOperator == null)
-			{
-				return false;
-			}
+			var cycleOperator = this._cycleAndConditionalOperators.FirstOrDefault(x => line.StartsWith(x.Word));
+			if (cycleOperator is null) return false;
+			
 			var conditionNodeStartIndex = line.IndexOf('(');
 			var conditionNodeEndIndex = FindBalancingBracketIndex(line, conditionNodeStartIndex);
 
 			if (conditionNodeEndIndex == -1)
-			{
 				throw new ArgumentException($"Unable to find bracket closing \'{cycleOperator.Word}\' operator condition.");
-			}
-
+		
 			int childNodeStartIndex = -1;
-			int childNodeEndIndex = 1;
+			int childNodeEndIndex = -1;
 			for (int i = conditionNodeEndIndex + 1; i < line.Length; i++)
 			{
 				if (line[i] == '{')
@@ -168,52 +167,45 @@ namespace nvul_compiler.Services
 				}
 			}
 
-			if (childNodeEndIndex != line.Length - 1 && cycleOperator.Type.Equals("cycleOperator"))
+			if (childNodeStartIndex==-1 || childNodeEndIndex==-1)
 			{
-				//throw new ArgumentException("There is characters left after parsing cycle childs.");
+				throw new ArgumentException("Unable to find child code block after condition. It must appear in \'operator(condition){...childs}\' format.");
 			}
-			//else if (cycleOperator.Type.Equals("conditionalOperator"))
-			//{
-			//	return false;
-			//}
 
-			var conditionNode = ParseLine(line.Substring(conditionNodeStartIndex + 1, conditionNodeEndIndex - conditionNodeStartIndex - 1).Trim());
-			var childLines = ParseNvulCode(line.Substring(childNodeStartIndex + 1, childNodeEndIndex - childNodeStartIndex - 1).Trim());
+			var conditionNode = ParseLine(line.Substring(conditionNodeStartIndex + 1, conditionNodeEndIndex - conditionNodeStartIndex - 1).Trim(), declaredNames);
+			var childLines = ParseNvulCode(line.Substring(childNodeStartIndex + 1, childNodeEndIndex - childNodeStartIndex - 1).Trim(), declaredNames);
 
 			if (cycleOperator.Type.Equals("cycleOperator"))
 				Node = new CycleNode(conditionNode, childLines);
 			else if (cycleOperator.Type.Equals("conditionalOperator"))
 				Node = new ConditionNode(conditionNode, childLines);
-			else
+			else // should be never thrown but added for the future
 				throw new NotImplementedException($"Unknown operator type \'{cycleOperator.Type}\'.");
-	
+
 
 			Node.NvulKeyword = cycleOperator;
 			return true;
 		}
 
-		protected readonly List<NvulOperator> _operatorsByPriorityDescending;
-		protected readonly StringEvaluator _operatorsEvaluator;
-		protected bool IsOperatorString(string line, out OperatorNode? Node)
+		// Строка соотвествует синтаксису 'val1 operator val2'.
+		protected bool IsOperatorString(string line, out OperatorNode? Node, IList<string>? declaredNames = null)
 		{
 			Node = null;
-			//var operatorIndex = _operatorsEvaluator.GetIndexOfFirstPriorTopOp(line, out var opLen);
 
+			// Без сортировки по приоритету возникает ошибка с неочевидной причиной. Легаси код не будет правится.
 			var operatorsIndexes = _operatorsEvaluator.GetIndexesOfTopLevelOperators(line, SortByPriority: true);
 			if (!operatorsIndexes.Any()) return false;
-			var startPrior = operatorsIndexes.First().Operation.Priority; 
-			// Взять последний из идущих подряд с начала операторов с
-			// одним приортетом
-			var foundOp = operatorsIndexes.TakeWhile(x => x.Operation.Priority == startPrior).Last();
+			var startPrior = operatorsIndexes.First().Operation.Priority;
+
+			// Взять крайний справа оператор, приоритет которого соответствует
+			// минимальному в данном выражении (- - * + /) - взять +
+			var foundOp = operatorsIndexes.Where(x => x.Operation.Priority == startPrior).MaxBy(x => x.Index);
 			var operatorIndex = foundOp.Index;
 			var opLen = foundOp.Operation.OperationString.Length;
 
-
-			//if (operatorIndex is null) return false;
-
 			Node = new OperatorNode(
-				ParseLine(line.Substring(0, operatorIndex).Trim()),
-				ParseLine(line.Substring(operatorIndex + opLen).Trim()),
+				ParseLine(line.Substring(0, operatorIndex).Trim(), declaredNames),
+				ParseLine(line.Substring(operatorIndex + opLen).Trim(), declaredNames),
 				line.Substring(operatorIndex, opLen));
 
 			return true;
@@ -272,7 +264,7 @@ namespace nvul_compiler.Services
 			return false;
 		}
 
-		protected bool IsFunctionCallString(string line, out FunctionCallNode? Node)
+		protected bool IsFunctionCallString(string line, out FunctionCallNode? Node, IList<string>? declaredNames)
 		{
 			Node = null;
 
@@ -280,103 +272,102 @@ namespace nvul_compiler.Services
 			if (firstOpenIndex == -1) return false;
 
 			string callName = line.Substring(0, firstOpenIndex);
-			int lastDotBeforeOpeningIndex = callName.LastIndexOf('.');
-			bool isStaticCall = lastDotBeforeOpeningIndex == -1;
+			int firstDotIndex = callName.IndexOf('.');
+			string functionName = null!;
+			string? variableName = null;
+			if (firstDotIndex == -1)
+			{
+				functionName = callName;
+			}
+			else
+			{
+				var callerVarName = callName.Substring(0, firstDotIndex);
+				var foundCaller = declaredNames?.FirstOrDefault(name => name.Equals(callerVarName));
 
-			var paramsNumber = _operatorsEvaluator.GetParametersOfFuncCall(line, out var parametersOfCall);
-			var functionNameOnly = callName.Substring(lastDotBeforeOpeningIndex + 1);
+				if (foundCaller is null)
+				{
+					functionName = callName;
+				}
+				else
+				{
+					variableName = foundCaller;
+					functionName = callName.Substring(firstDotIndex + 1);
+				}
+			}
 
+			var callParams = _operatorsEvaluator.GetParametersOfFuncCall(line, out var parametersOfCall);
+
+			// 1 parameter is a constant for legacy code support
 			if (this._operatorsEvaluator.FunctionsSignaturesByParametersNumber.TryGetValue(1, out var funcsByParams))
 			{
-				if (funcsByParams.ContainsKey(functionNameOnly))
+				if (funcsByParams.ContainsKey(functionName))
 				{
 
 				}
 				else
 				{
-					// should never throw.
-					throw new ArgumentException($"No functions exists with name \'{callName}\' and {paramsNumber} parameters.");
+					throw new ArgumentException($"No functions exists with name \'{callName}\' and {callParams} parameters.");
 				}
 			}
 			else
 			{
-				throw new ArgumentException($"No functions exists with {paramsNumber} parameters.");
+				throw new ArgumentException($"No functions exists with {callParams} parameters.");
 			}
 
-			Node = new FunctionCallNode(isStaticCall ? null : callName.Substring(0, lastDotBeforeOpeningIndex), functionNameOnly, parametersOfCall.Select(x => ParseLine(x)).ToList());
+			Node = new FunctionCallNode(variableName, functionName, parametersOfCall.Select(x => ParseLine(x, declaredNames)).ToList());
 			return true;
 		}
 
-		public void CreateRegexesForExpressions()
+		public ICodeNode ParseLine(string nvulCode, IList<string>? declaredNames = null)
 		{
-
-
-
-			throw new NotImplementedException();
-		}
-
-		internal enum ExpressionTypes
-		{
-			DeclarationNode,
-			AssignmentNode,
-			AssignmentWithDeclarationNode,
-			ConditionNode,
-			CycleNode,
-			FunctionCallNode,
-			LiteralNode
-		}
-
-		public ICodeNode ParseLine(string nvulCode)
-		{
-			//ICodeNode? Node = null;
-
 			if (nvulCode.StartsWith('(') && nvulCode.EndsWith(')'))
 			{
 				if (FindBalancingBracketIndex(nvulCode, 0) == (nvulCode.Length - 1))
-					return ParseLine(nvulCode.Substring(1, nvulCode.Length - 2));
+					return ParseLine(nvulCode.Substring(1, nvulCode.Length - 2), declaredNames);
 			}
 
-			// Порядок проверки важен! 
-			if (IsDeclarationString(nvulCode, out var declarNode))
+			// Порядок проверки важен
+			if (IsDeclarationString(nvulCode, out var declarNode, declaredNames))
 				return declarNode!;
-			if (IsCycleOrSimpleConditionalString(nvulCode, out var cycleNode))
+			if (IsCycleOrSimpleConditionalString(nvulCode, out var cycleNode, declaredNames))
 				return cycleNode!;
-			if (IsAssignmentString(nvulCode, out var assignNode))
+			if (IsAssignmentString(nvulCode, out var assignNode, declaredNames))
 				return assignNode!;
-			if (IsOperatorString(nvulCode, out var operNode))
+			if (IsOperatorString(nvulCode, out var operNode, declaredNames))
 				return operNode!;
 			if (IsNumericLiteralString(nvulCode, out var numLiteral))
 				return numLiteral!;
-			if(IsBooleanLiteralString(nvulCode,out var boolLiteral))
+			if (IsBooleanLiteralString(nvulCode, out var boolLiteral))
 				return boolLiteral!;
 			if (IsVariableRefString(nvulCode, out var variableRefNode))
 				return variableRefNode!;
-			if (IsFunctionCallString(nvulCode, out var funcCallNode))
+			if (IsFunctionCallString(nvulCode, out var funcCallNode, declaredNames))
 				return funcCallNode!;
-
 
 			throw new ArgumentException($"Could not determinate the type of expression \'{nvulCode}\'");
 		}
 
+
+		// 
 		public IEnumerable<IndexRange> FindTopLevelLines(string nvulCode)
 		{
 			var result = new List<IndexRange>();
 			int lastStart = 0;
-			int i=0;
+			int i = 0;
 			for (; i < nvulCode.Length; i++)
 			{
 				if (opening.Contains(nvulCode[i]))
 				{
 					i = FindBalancingBracketIndex(nvulCode, i);
 				}
-				else if (nvulCode[i] == ';')
+				else if (nvulCode[i] == LineDelimiter)
 				{
 					yield return new IndexRange(lastStart, i - lastStart);
 					lastStart = i + 1;
 				}
 			}
 
-			if (nvulCode.Last() != ';')
+			if (nvulCode.Last() != LineDelimiter)
 			{
 				yield return new IndexRange(lastStart, nvulCode.Length - lastStart);
 			}
@@ -384,16 +375,32 @@ namespace nvul_compiler.Services
 			yield break;
 		}
 
-		public IEnumerable<ICodeNode> ParseNvulCode(string nvulCode)
+		public List<ICodeNode> ParseNvulCode(string nvulCode, IList<string>? declaredNames = null)
+		{
+			if (string.IsNullOrEmpty(nvulCode)) return Array.Empty<ICodeNode>().ToList();
+
+			List<ICodeNode> result = new();
+
+			var enumer = GetParsingEnumerator(nvulCode, declaredNames);
+
+			while (enumer.MoveNext()) result.Add(enumer.Current);
+
+			return result;
+		}
+
+		public IEnumerator<ICodeNode> GetParsingEnumerator(string nvulCode, IList<string>? declaredNames = null)
 		{
 			if (string.IsNullOrEmpty(nvulCode)) yield break;
 
+			if (declaredNames is null) declaredNames = new List<string>();
+
 			foreach (var ln in FindTopLevelLines(nvulCode))
 			{
-				yield return ParseLine(nvulCode.Substring(ln.Start, ln.Count).Trim());
+				yield return ParseLine(nvulCode.Substring(ln.Start, ln.Count).Trim(), declaredNames);
 			}
 
 			yield break;
 		}
+
 	}
 }

@@ -35,13 +35,17 @@ namespace nvul_compiler.Services
 			{
 				var realNode = (INodeWithConditionAndChilds)node;
 				if (realNode.NvulKeyword is null) throw new ArgumentNullException("Translation must be known on the build stage.");
-				return $"{realNode.NvulKeyword.TranslationString}({BuildNode(realNode.Condition)}) {{{TranslateNvulNodes(realNode.Childs)}}}";
+				return $"{realNode.NvulKeyword.TranslationString}({BuildNode(realNode.Condition)}){Environment.NewLine}" +
+					$"{{{Environment.NewLine}" +
+					$"{BuildNvulCode(realNode.Childs)}" +
+					$"}}";
 			}
 			if(node is FunctionCallNode)
 			{
 				var realNode = (FunctionCallNode)node;
 				if (realNode.NvulFunction is null) throw new ArgumentNullException("Translation must be known on the build stage.");
-				return $"{realNode.NvulFunction.TranslationString}({string.Join(", ",realNode.Arguments.Select(x=> BuildNode(x)))})";
+				var varRef = realNode.isStatic ? string.Empty:$"{realNode.VariableName}.";
+				return $"{varRef}{realNode.NvulFunction.TranslationString}({string.Join(", ",realNode.Arguments.Select(x=> BuildNode(x)))})";
 			}
 			if(node is ILiteralNode)
 			{
@@ -64,7 +68,7 @@ namespace nvul_compiler.Services
 			throw new NotImplementedException($"The passed code node has an unkown type: {((object)node).GetType().FullName}.");
 		}
 
-		public IEnumerable<string> TranslateNvulNodes(IEnumerable<ICodeNode> nodes)
+		public IEnumerator<string> GetTranslatingEnumerator(IEnumerable<ICodeNode> nodes)
 		{
 			foreach(var node in nodes)
 			{
@@ -74,15 +78,18 @@ namespace nvul_compiler.Services
 			yield break;
 		}
 
-		public string BuildNvulCode(IEnumerable<ICodeNode> nodes)
+		public string BuildNvulCode(IEnumerable<ICodeNode> nodes, bool breakLines = true)
 		{
 			StringBuilder sb = new();
 
-			foreach(string line in TranslateNvulNodes(nodes))
+			var enumer = GetTranslatingEnumerator(nodes);
+
+			while(enumer.MoveNext())
 			{
+				var line = enumer.Current;
 				sb.Append(line);
 				sb.Append(';');
-				sb.AppendLine();
+				if(breakLines) sb.AppendLine();
 			}
 
 			return sb.ToString();

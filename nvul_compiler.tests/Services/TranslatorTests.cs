@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit.Abstractions;
+using Xunit.Sdk;
 
 namespace nvul_compiler.tests.Services
 {
@@ -94,7 +95,7 @@ namespace nvul_compiler.tests.Services
 
 			testString = "matrix myMatrix";
 			result = translator.BuildNode(parser.ParseLine(testString));
-			Assert.Equal("Matrix myMatrix", result);
+			Assert.Equal("IntegerMatrix myMatrix", result);
 		}
 
 		[Fact]
@@ -111,17 +112,22 @@ namespace nvul_compiler.tests.Services
 			testString = "myLogical = true";
 			result = translator.BuildNode(parser.ParseLine(testString));
 			Assert.Equal("myLogical = true", result);
+		}
 
 
+		[Fact]
+		public void CanTranslateFunctionCall()
+		{
 			// The exact function overload to be called is being determined
 			// on the analyzing step, so it is need to be performed here.
 			// ToList() is required because Parser is actually an enumerator,
+			// !! (it is no longer is after code changes)
 			// its not returning an actual collection.
-			testString = "matrix mtx; mtx = InputMatrixValue(123);";
+			var testString = "matrix mtx; mtx = InputMatrixValue(123);";
 			var parsed = parser.ParseNvulCode(testString).ToList();
-			analyzer.AnalyzeNvulNodes(parsed,new(null));
-			result = translator.BuildNvulCode(parsed);
-			Assert.Equal($"Matrix mtx;{Environment.NewLine}mtx = InputMatrix(123);{Environment.NewLine}", result);
+			analyzer.AnalyzeNvulNodes(parsed, new(null));
+			var result = translator.BuildNvulCode(parsed);
+			Assert.Equal($"IntegerMatrix mtx;{Environment.NewLine}mtx = InputMatrix(123);{Environment.NewLine}", result);
 		}
 
 		[Fact]
@@ -130,8 +136,9 @@ namespace nvul_compiler.tests.Services
 			// The exact operator overload to be called is being determined
 			// on the analyzing step, so it is need to be performed here.
 			// ToList() is required because Parser is actually an enumerator,
+			// !! (it is no longer is after code changes)
 			// its not returning an actual collection.
-			var expr = "1-123+222*4/2+225/2+1+1+1/2+1*3+1-(222*4/2+225/2-222*4/2+225/2-(222*4/2+225/2)-(1/1/1/1/(1)))";
+			var expr = "-500+1-1-123+222*4/2+225/2+1+1+1/2+1*3+1-(222*4/2+225/2-222*4/2+225/2-(222*4/2+225/2)-(1/1/2/1/(1)))";
 			var testString = $"float fl; fl = {expr};";
 			var parsed = parser.ParseNvulCode(testString).ToList();
 			analyzer.AnalyzeNvulNodes(parsed, new(null));
@@ -143,7 +150,49 @@ namespace nvul_compiler.tests.Services
 			_output.WriteLine(translatedExpr);
 
 			// equations are same
-			Assert.Equal(evaler.Eval2(expr), evaler.Eval2(translatedExpr),10);
+			Assert.Equal(evaler.Eval2(expr), evaler.Eval2(translatedExpr), 10);
+		}
+
+
+		// this test tryes step-by-step translation.
+		[Fact]
+		public void CanTranslateCycle()
+		{
+			var testString = $"while(true) {{InputMatrixValue(123);}};";
+
+			var rootContext = new CodeContext(null);
+			var codeBuilder = new StringBuilder();
+			var enumer = parser.GetParsingEnumerator(testString);
+			while(enumer.MoveNext())
+			{
+				var tn = enumer.Current;
+				analyzer.AnalyzeNodeAndUpdateContext(tn, rootContext);
+				codeBuilder.Append(translator.BuildNode(tn));
+				codeBuilder.Append(';');
+			}
+
+
+			var result = codeBuilder.ToString();
+
+			_output.WriteLine(result);
+
+			// equations are same
+			Assert.Equal($"while(true){Environment.NewLine}{{{Environment.NewLine}" +
+				$"InputMatrix(123);{Environment.NewLine}}};", result);
+		}
+
+		// this test is for hand-testing (running the code in another project).
+		[Fact]
+		public void CanTranslateComplexProgram()
+		{
+			var testString = "matrix myMtr; myMtr = IntMatrix.FactoryInputCreate(2,2);" +
+				"integer c1; c1=1; while(c1>0) { myMtr.SetVal(c1,0,0); }; PrintMatrix2(myMtr);";
+
+			var parsed = parser.ParseNvulCode(testString).ToList();
+			analyzer.AnalyzeNvulNodes(parsed, new(null));
+			var result = translator.BuildNvulCode(parsed);
+
+			_output.WriteLine(result);
 		}
 	}
 }

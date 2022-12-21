@@ -271,7 +271,7 @@ namespace nvul_compiler.tests.Services
 		{
 			var testString = "myF.Print()";
 
-			var parsed = parser.ParseLine(testString);
+			var parsed = parser.ParseLine(testString, new string[] { "myF" }.ToList());
 
 			Assert.IsType<FunctionCallNode>(parsed);
 			var result = (FunctionCallNode)parsed;
@@ -289,7 +289,7 @@ namespace nvul_compiler.tests.Services
 		{
 			var testString = "float myF; while(myF-0 == 0) { myF.Print(); myF = myF*2 +1; } ";
 
-			var parsed = parser.ParseNvulCode(testString);
+			var parsed = parser.ParseNvulCode(testString, null);
 
 			string json = JsonConvert.SerializeObject(parsed, Formatting.Indented,
 				new JsonSerializerSettings()
@@ -305,7 +305,7 @@ namespace nvul_compiler.tests.Services
 		{
 			var testString = "if(myF-0 == 0) { myF.Print(); } ";
 
-			var parsed = parser.ParseLine(testString);
+			var parsed = parser.ParseLine(testString,new string[] { "myF"}.ToList());
 
 			Assert.IsType<ConditionNode>(parsed);
 			var result = (ConditionNode)parsed;
@@ -326,7 +326,7 @@ namespace nvul_compiler.tests.Services
 		{
 			var testString = "if(IsNumbersNotEqual(myF,123)) { myF.Print(); } ";
 
-			var parsed = parser.ParseLine(testString);
+			var parsed = parser.ParseLine(testString,new string[] { "myF" }.ToList());
 
 			Assert.IsType<ConditionNode>(parsed);
 			var result = (ConditionNode)parsed;

@@ -14,6 +14,7 @@ namespace nvul_compiler.Services
 	 * Тип используется для возможности проверки использования.
 	 * Последнее присвоенное значение используется для анализа возможных некорректных 
 	 * выражений, вроде 'myLogic = false; if(myLogic) { ... }' - always false expression.
+	 * Данный функционал заложен, но, скорее всего, не будет реализован.
 	 */
 	internal class VariableContext
 	{
@@ -41,7 +42,7 @@ namespace nvul_compiler.Services
 
 	internal class CodeContext
 	{
-		public CodeContext? FatherContext { get; set; }
+		protected CodeContext? FatherContext { get; set; }
 
 		public CodeContext(CodeContext? fatherContext)
 		{
@@ -72,11 +73,8 @@ namespace nvul_compiler.Services
 			if (found is null) throw new ArgumentOutOfRangeException($"Variable with name \'{varName}\' not found.");
 			found.LastAssignedValue = value;
 		}
-
 		public void AssignVariable(AssignmentNode node) => this.AssignVariable(node.VariableName, node.AssignedValue);
 
-		[Obsolete]
-		public CodeContext CreateChild() => new CodeContext(this);
 	}
 	internal class Analyzer
 	{
@@ -87,7 +85,7 @@ namespace nvul_compiler.Services
 			_configuration = configuration;
 		}
 
-		/* Проверяет возможно импилисит-преобразования типа
+		/* Проверяет возможность импилисит-преобразования типа
 		 */
 		public bool CanBeImplicitlyConverted(string fromType, string toType)
 		{
@@ -142,7 +140,6 @@ namespace nvul_compiler.Services
 				var leftResultingType = ValidateUsageAndGetResultingType(realNode.Left, currentContext);
 				var rightResultingType = ValidateUsageAndGetResultingType(realNode.Right, currentContext);
 
-
 				/* ноды-операнды не могут быть исполняемыми командами без возвращаемого значения
 				 * (например нодами присвоения). В этом случае выбрасывается исключение.
 				 */
@@ -170,7 +167,7 @@ namespace nvul_compiler.Services
 					return exactMatch.EvaluatesTo;
 
 				/* Если удалось найти оператор, выполняющий операции с типами, 
-				 * к которым можно скрытно привести данные типы.
+				 * к которым можно скрыто привести данные типы.
 				 */
 				var implicitMatch = this._configuration.Operators.FirstOrDefault(x =>
 					x.OperatorString.Equals(realNode.Operator)
@@ -306,7 +303,7 @@ namespace nvul_compiler.Services
 				if (found.Type != assignedType && !GetAllImplicitVariants(assignedType).Any(x => x.Equals(found.Type)))
 				{
 					throw new ArgumentException($"You are trying to assign value of type \'{assignedType}\' to the variable with name \'{realNode.VariableName}\' " +
-						$"and type {found.Type}. No implicit conversion exists.");
+						$"and type \'{found.Type}\'. No implicit conversion exists.");
 				}
 
 				found.LastAssignedValue = realNode.AssignedValue;

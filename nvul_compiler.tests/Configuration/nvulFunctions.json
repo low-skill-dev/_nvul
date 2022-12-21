@@ -62,7 +62,8 @@
 			"ParametersDescription": [
 				""
 			]
-		}
+		},
+		"TranslationString": "Console.WriteLine"
 	},
 	{
 		"FunctionName": "IsNumbersNotEqual",
@@ -70,10 +71,54 @@
 		"EvaluatesTo": "logical",
 		"ApplicableTypes": null,
 		"Arguments": {
-			"ParametersTypes": [ "float","float" ],
+			"ParametersTypes": [ "float", "float" ],
 			"ParametersDescription": [
-				"", ""
+				"",
+				""
 			]
 		}
+	},
+	{
+		"FunctionName": "IntMatrix.FactoryInputCreate",
+		"AliasName": "ввестиЛогическое",
+		"EvaluatesTo": "matrix",
+		"ApplicableTypes": null,
+		"Arguments": {
+			"ParametersTypes": [ "integer", "integer" ],
+			"ParametersDescription": [
+				"Matrix side 1 size",
+				"Matrix side 2 size"
+			]
+		},
+		"TranslationString": "IntegerMatrix.InputCreate"
+	},
+	{
+		"FunctionName": "SetVal",
+		"AliasName": "ввестиЛогическое",
+		"EvaluatesTo": "matrix",
+		"ApplicableTypes": [ "matrix" ],
+		"Arguments": {
+			"ParametersTypes": [ "integer", "integer", "integer" ],
+			"ParametersDescription": [
+				"",
+				"",
+				""
+			]
+		},
+		"TranslationString": "SetValue"
+	},
+	{
+		"FunctionName": "PrintMatrix2",
+		"AliasName": "ввестиЛогическое",
+		"EvaluatesTo": null,
+		"ApplicableTypes": null,
+		"Arguments": {
+			"ParametersTypes": [ "matrix"],
+			"ParametersDescription": [
+				""
+			]
+		},
+		"TranslationString": "Console.WriteLine"
 	}
+
 ]
