@@ -13,6 +13,7 @@ namespace nvul_compiler.Models.Configuration
 		public string Type { get; set; }
 		public NvulFunctionParameters? CtorArguments { get; set; }
 		public string TranslationString { get; set; }
+		public string? UsageRequiresAdding { get; set; }
 
 		public NvulKeyword(string word, string alias, string type, NvulFunctionParameters? ctorArguments = null)
 		{

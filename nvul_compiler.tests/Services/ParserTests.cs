@@ -56,7 +56,7 @@ namespace nvul_compiler.tests.Services
 			this.nvulKeywords = Utf8Json.JsonSerializer.Deserialize<NvulKeyword[]>(File.ReadAllText("./Configuration/nvulKeywords.json"));
 			this.nvulOperators = Utf8Json.JsonSerializer.Deserialize<NvulOperator[]>(File.ReadAllText("./Configuration/nvulOperators.json"));
 			this.nvulFunctions = Utf8Json.JsonSerializer.Deserialize<NvulFunction[]>(File.ReadAllText("./Configuration/nvulFunctions.json"));
-			this.nvulConfiguration = new(nvulFunctions, null, nvulKeywords, null, nvulOperators);
+			this.nvulConfiguration = new(nvulFunctions, null, nvulKeywords, nvulOperators);
 			this.parser = new(nvulConfiguration);
 		}
 

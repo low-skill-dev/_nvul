@@ -8,6 +8,8 @@ namespace nvul_compiler.Models.CodeTree
 {
 	public class AssignmentNode:ICodeNode
 	{
+		public int InFileCharIndex { get; set; }
+
 		public string VariableName { get; set; }
 		public ICodeNode AssignedValue { get; set; }
 

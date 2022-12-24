@@ -1,0 +1,6 @@
+{
+    "apiBasePath":"/api", 
+    "compilerPath":"/compiler",
+    "compilerDefaultConfigurationPath":"/default-configuration",
+    "compilerRussianConfigurationPath":"russian-configuration"
+}

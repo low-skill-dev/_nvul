@@ -1,0 +1,8 @@
+[
+  "vartype",
+  "cycleOperator",
+  "conditionalOperator",
+  "typeComparisonOperator",
+  "objectComparisonOperator",
+  "compiletimeConstant"
+]

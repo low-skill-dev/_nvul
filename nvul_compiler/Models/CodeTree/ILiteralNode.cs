@@ -13,6 +13,7 @@ namespace nvul_compiler.Models.CodeTree
 
 	public class IntegerLiteral : ILiteralNode
 	{
+		public int InFileCharIndex { get; set; }
 		public long Value { get; set; }
 		public object GetValue() => this.Value;
 		public IntegerLiteral(long value)
@@ -23,6 +24,7 @@ namespace nvul_compiler.Models.CodeTree
 
 	public class FloatLiteral : ILiteralNode
 	{
+		public int InFileCharIndex { get; set; }
 		public double Value { get; set; }
 		public object GetValue() => this.Value;
 		public FloatLiteral(double value)
@@ -33,6 +35,7 @@ namespace nvul_compiler.Models.CodeTree
 
 	public class StringLiteral : ILiteralNode
 	{
+		public int InFileCharIndex { get; set; }
 		public string Value { get; set; }
 		public object GetValue() => this.Value;
 		public StringLiteral(string value)
@@ -43,6 +46,7 @@ namespace nvul_compiler.Models.CodeTree
 
 	public class BoolLiteral:ILiteralNode
 	{
+		public int InFileCharIndex { get; set; }
 		public bool Value { get; set; }
 		public object GetValue() => Value ? "true" : "false";
 		public BoolLiteral(bool value)

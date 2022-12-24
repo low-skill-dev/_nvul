@@ -9,6 +9,32 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Configuration\nvulFunctions.json" />
+    <None Remove="Configuration\nvulImplicits.json" />
+    <None Remove="Configuration\nvulKeywords.json" />
+    <None Remove="Configuration\nvulOperators.json" />
+    <None Remove="Configuration\nvulWordTypes.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Configuration\nvulFunctions.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configuration\nvulImplicits.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configuration\nvulKeywords.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configuration\nvulOperators.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configuration\nvulWordTypes.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
     <PackageReference Include="Utf8Json" Version="1.3.7" />
     <PackageReference Include="xunit" Version="2.4.1" />
@@ -20,6 +46,11 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\nvul_compiler\nvul_compiler.csproj" />
+    <ProjectReference Include="..\nvul_server\nvul_server.csproj" />
   </ItemGroup>
 
 </Project>

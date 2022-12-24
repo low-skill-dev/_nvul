@@ -8,6 +8,7 @@ namespace nvul_compiler.Models.CodeTree
 {
 	internal class VariableRefNode:ICodeNode
 	{
+		public int InFileCharIndex { get; set; }
 		public string VariableName { get; set; }
 
 		public VariableRefNode(string variableName)

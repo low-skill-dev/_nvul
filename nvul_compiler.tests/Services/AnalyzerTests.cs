@@ -32,7 +32,7 @@ namespace nvul_compiler.tests.Services
 			this.nvulFunctions = Utf8Json.JsonSerializer.Deserialize<NvulFunction[]>(File.ReadAllText("./Configuration/nvulFunctions.json"));
 			this.nvulImplicits = Utf8Json.JsonSerializer.Deserialize<NvulImplicit[]>(File.ReadAllText("./Configuration/nvulImplicits.json"));
 
-			this.nvulConfiguration = new(nvulFunctions, nvulImplicits, nvulKeywords, null, nvulOperators);
+			this.nvulConfiguration = new(nvulFunctions, nvulImplicits, nvulKeywords, nvulOperators);
 			this.parser = new(nvulConfiguration);
 			this.analyzer = new(nvulConfiguration);
 		}
@@ -169,7 +169,7 @@ namespace nvul_compiler.tests.Services
 
 			var analyzeAction = () => { this.analyzer.AnalyzeNvulNodes(nodes); };
 
-			Assert.Throws<NullReferenceException>(analyzeAction);
+			Assert.Throws<ArgumentException>(analyzeAction);
 			try { analyzeAction(); } catch (Exception ex) { _output.WriteLine(ex.ToString()); }
 		}
 

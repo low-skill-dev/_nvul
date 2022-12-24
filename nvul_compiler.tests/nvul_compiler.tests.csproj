@@ -27,7 +27,6 @@
 		<None Remove="Configuration\nVulImplicits.json" />
 		<None Remove="Configuration\nvulKeywords.json" />
 		<None Remove="Configuration\nvulOperators.json" />
-		<None Remove="Configuration\nVulTranslations.json" />
 		<None Remove="Configuration\nvulWordTypes.json" />
 	</ItemGroup>
 
@@ -42,9 +41,6 @@
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Configuration\nvulOperators.json">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Configuration\nvulTranslations.json">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Configuration\nvulWordTypes.json">

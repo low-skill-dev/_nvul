@@ -1,0 +1,24 @@
+.app{
+    box-sizing: border-box;
+    display:flexbox;
+    width: 100%;
+    padding: 1%;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 2vh;
+    overflow: hidden;
+    text-overflow: clip;
+    text-align: center;
+}
+.appHeader{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: bolder;
+    font-size: 7vh;
+}
+.appSubheader{
+    font-weight: normal;
+    font-size: 3vh;
+    padding-bottom: 2vh;
+}
+.compilerHolder{
+
+}

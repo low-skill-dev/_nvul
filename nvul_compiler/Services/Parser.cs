@@ -18,7 +18,7 @@ namespace nvul_compiler.Services
 	 * вынужденное частичное дублирование функционала анализатора - 
 	 * в части проверки объявления переменной, но для других целей.
 	 */
-	internal class Parser
+	public class Parser
 	{
 		/* Структура служит для выделения последовательности символов в строке.
 		 */
@@ -246,7 +246,7 @@ namespace nvul_compiler.Services
 			return false;
 		}
 
-		protected bool IsVariableRefString(string line, out VariableRefNode? Node)
+		internal bool IsVariableRefString(string line, out VariableRefNode? Node)
 		{
 			Node = null;
 
@@ -349,7 +349,7 @@ namespace nvul_compiler.Services
 
 
 		// 
-		public IEnumerable<IndexRange> FindTopLevelLines(string nvulCode)
+		internal IEnumerable<IndexRange> FindTopLevelLines(string nvulCode)
 		{
 			var result = new List<IndexRange>();
 			int lastStart = 0;
@@ -388,15 +388,32 @@ namespace nvul_compiler.Services
 			return result;
 		}
 
+		protected IEnumerable<ICodeNode> ParseNvulCodeYield(string nvulCode, IList<string>? declaredNames = null)
+		{
+			var enumer = GetParsingEnumerator(nvulCode, declaredNames);
+
+			while (enumer.MoveNext()) yield return enumer.Current;
+		}
+
 		public IEnumerator<ICodeNode> GetParsingEnumerator(string nvulCode, IList<string>? declaredNames = null)
 		{
 			if (string.IsNullOrEmpty(nvulCode)) yield break;
 
 			if (declaredNames is null) declaredNames = new List<string>();
 
+			ICodeNode t;
 			foreach (var ln in FindTopLevelLines(nvulCode))
 			{
-				yield return ParseLine(nvulCode.Substring(ln.Start, ln.Count).Trim(), declaredNames);
+				try
+				{
+					t = ParseLine(nvulCode.Substring(ln.Start, ln.Count).Trim(), declaredNames);
+				}
+				catch(Exception ex)
+				{
+					throw new ArgumentException($"Parsing error in node starting at char {ln.Start}: \'{ex.Message}\'.");
+				}
+				t.InFileCharIndex = ln.Start;
+				yield return t;
 			}
 
 			yield break;

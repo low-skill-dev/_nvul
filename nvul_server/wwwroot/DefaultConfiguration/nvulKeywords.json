@@ -3,19 +3,22 @@
     "Word": "float",
     "Alias": "число",
     "Type": "vartype",
-    "CtorArguments": null
+    "CtorArguments": null,
+    "TranslationString": "double"
   },
   {
     "Word": "logical",
     "Alias": "логический",
     "Type": "vartype",
-    "CtorArguments": null
+    "CtorArguments": null,
+    "TranslationString": "bool"
   },
   {
     "Word": "integer",
     "Alias": "целое",
     "Type": "vartype",
-    "CtorArguments": null
+    "CtorArguments": null,
+    "TranslationString": "long"
   },
   {
     "Word": "charseq",
@@ -32,24 +35,40 @@
   {
     "Word": "matrix",
     "Alias": "матрица",
-    "Type:": "vartype",
+    "Type": "vartype",
     "CtorArguments": {
       "ParametersTypes": [ "float", "float" ],
       "ParametersDescription": [
         "The first dimension of the matrix",
         "The second dimension of the matrix"
       ]
-    }
+    },
+    "TranslationString": "IntegerMatrix"
   },
   {
     "Word": "while",
     "Alias": "пока",
-    "Type:": "cycleOperator",
+    "Type": "cycleOperator",
     "CtorArguments": {
       "ParametersTypes": [ "logical" ],
-      "ParametersDescription": [
-        "Condition"
-      ]
-    }
+      "ParametersDescription": [ "Condition" ]
+    },
+    "TranslationString": "while"
+  },
+  {
+    "Word": "if",
+    "Alias": "если",
+    "Type": "conditionalOperator",
+    "CtorArguments": {
+      "ParametersTypes": [ "logical" ],
+      "ParametersDescription": [ "Condition" ]
+    },
+    "TranslationString": "if"
+  },
+  {
+    "Word": "byte",
+    "Alias": "байт",
+    "Type": "vartype",
+    "CtorArguments": null
   }
 ]

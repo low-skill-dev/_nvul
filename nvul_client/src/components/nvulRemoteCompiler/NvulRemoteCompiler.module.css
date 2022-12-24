@@ -1,0 +1,30 @@
+.codeTextArea {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 1%;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 2vh;
+    overflow: hidden;
+    overflow-y: scroll;
+    background-color: rgb(245, 255, 245);
+}
+
+.collapsibleBlock {
+    background-color: lightgreen;
+    padding: 5px;
+    border: 1px solid darkgray;
+
+}
+
+.actionButton {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: bolder;
+    font-size: 2vh;
+    margin: 2px;
+}
+
+.errorMessage {
+    background-color: rgb(255, 245, 245);
+    border: 1px solid red;
+    border-radius: 5px;
+}

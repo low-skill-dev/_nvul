@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "plugins": [{ "name": "typescript-plugin-css-modules" }],
+    "target": "es6",
     "lib": [
       "dom",
       "dom.iterable",
       "esnext"
     ],
-    "allowJs": true,
+    "allowJs": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -18,9 +19,15 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "moduleDetection": "force",
+    "noImplicitAny": true
   },
   "include": [
-    "src"
+    "src",
+    "src/**/*.ts", 
+    "src/**/*.tsx",
+    "src/**/*.module.css",
+    "declaration.d.ts"
   ]
 }

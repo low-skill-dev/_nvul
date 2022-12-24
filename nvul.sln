@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nvul_server.tests", "nvul_s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nvul_compiler.tests", "nvul_compiler.tests\nvul_compiler.tests.csproj", "{0F2045DE-58F7-4D84-A01B-6B1E053FD5DC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nvul_inbuilt_types", "nvul_inbuilt_types\nvul_inbuilt_types.csproj", "{FF6D0BBD-8E30-4185-B10F-CBF55CF4B0FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{0F2045DE-58F7-4D84-A01B-6B1E053FD5DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F2045DE-58F7-4D84-A01B-6B1E053FD5DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F2045DE-58F7-4D84-A01B-6B1E053FD5DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF6D0BBD-8E30-4185-B10F-CBF55CF4B0FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF6D0BBD-8E30-4185-B10F-CBF55CF4B0FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF6D0BBD-8E30-4185-B10F-CBF55CF4B0FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF6D0BBD-8E30-4185-B10F-CBF55CF4B0FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

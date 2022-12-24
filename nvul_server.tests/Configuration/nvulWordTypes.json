@@ -3,5 +3,6 @@
   "cycleOperator",
   "conditionalOperator",
   "typeComparisonOperator",
-  "objectComparisonOperator"
+  "objectComparisonOperator",
+  "compiletimeConstant"
 ]

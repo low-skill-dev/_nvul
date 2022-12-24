@@ -9,6 +9,8 @@ namespace nvul_compiler.Models.CodeTree
 {
 	public class ConditionNode : INodeWithConditionAndChilds
 	{
+		public int InFileCharIndex { get; set; }
+
 		public ICodeNode Condition { get; set; }
 		public IEnumerable<ICodeNode> Childs { get; set; }
 		public ConditionNode? NextCondition { get; set; }

@@ -7,33 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Configuration\nvulFunctions.json" />
-    <None Remove="Configuration\nVulImplicits.json" />
-    <None Remove="Configuration\nvulKeywords.json" />
-    <None Remove="Configuration\nvulOperators.json" />
-    <None Remove="Configuration\nVulTranslations.json" />
-    <None Remove="Configuration\nvulWordTypes.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Configuration\nvulFunctions.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configuration\nVulImplicits.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configuration\nvulKeywords.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configuration\nvulOperators.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configuration\nVulTranslations.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Configuration\nvulWordTypes.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Compile Remove="Configuration\**" />
+    <EmbeddedResource Remove="Configuration\**" />
+    <None Remove="Configuration\**" />
   </ItemGroup>
 
   <ItemGroup>

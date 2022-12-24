@@ -76,7 +76,7 @@ namespace nvul_compiler.Services
 		public void AssignVariable(AssignmentNode node) => this.AssignVariable(node.VariableName, node.AssignedValue);
 
 	}
-	internal class Analyzer
+	public class Analyzer
 	{
 		protected NvulConfiguration _configuration;
 
@@ -87,7 +87,7 @@ namespace nvul_compiler.Services
 
 		/* Проверяет возможность импилисит-преобразования типа
 		 */
-		public bool CanBeImplicitlyConverted(string fromType, string toType)
+		internal bool CanBeImplicitlyConverted(string fromType, string toType)
 		{
 			if (fromType.Equals(toType)) return true;
 
@@ -97,7 +97,7 @@ namespace nvul_compiler.Services
 
 		/* Получается все типы, в которые переданный тип может быть скрыто преобразован.
 		 */
-		public IEnumerable<string> GetAllImplicitVariants(string fromType)
+		internal IEnumerable<string> GetAllImplicitVariants(string fromType)
 		{
 			return this._configuration.Implicits
 				.Where(x => x.Vartype.Equals(fromType)).Select(x => x.ImplicitTo).Append(fromType);
@@ -107,7 +107,7 @@ namespace nvul_compiler.Services
 		 * Например, выражение внутри условного оператора должно быть валидироно на
 		 * возвращение типа logical (boolean у нормальных людей).
 		 */
-		public string? ValidateUsageAndGetResultingType(ICodeNode node, CodeContext? currentContext)
+		internal string? ValidateUsageAndGetResultingType(ICodeNode node, CodeContext? currentContext)
 		{
 			// Ноды, которые не имеют возвращаемого типа
 			if (node is DeclarationNode ||
@@ -253,7 +253,7 @@ namespace nvul_compiler.Services
 
 		// try not to use this! very slow if too much calls
 		[Obsolete]
-		public bool CanBeConvertedToTheType(ICodeNode node, string targetType, CodeContext? context = null)
+		internal bool CanBeConvertedToTheType(ICodeNode node, string targetType, CodeContext? context = null)
 		{
 			var resultingType = ValidateUsageAndGetResultingType(node, context);
 			if (resultingType is null)
@@ -268,7 +268,7 @@ namespace nvul_compiler.Services
 		 * делигируя дальнейшую валидацию. Лучше не использовать здесь рекурсию, иначе ломается
 		 * суть валидации одного дискретного куска кода.
 		 */
-		public bool AnalyzeNodeAndUpdateContext(ICodeNode node, CodeContext context)
+		internal bool AnalyzeNodeAndUpdateContext(ICodeNode node, CodeContext context)
 		{
 			if (node is null) throw new ArgumentNullException("Internal analyzer error."); // should be never thrown
 
@@ -356,13 +356,23 @@ namespace nvul_compiler.Services
 			throw new NotImplementedException($"The passed code node has an unkown type: {((object)node).GetType().FullName}.");
 		}
 
-		public bool AnalyzeNvulNodes(IEnumerable<ICodeNode> nodes, CodeContext? fatherContext = null)
+		internal bool AnalyzeNvulNodes(IEnumerable<ICodeNode> nodes, CodeContext? fatherContext = null)
 		{
 			CodeContext codeCtx = new(fatherContext);
 
 			var result = true;
 
-			foreach (var node in nodes) result = result && AnalyzeNodeAndUpdateContext(node, codeCtx);
+			foreach (var node in nodes)
+			{
+				try
+				{
+					result = result && AnalyzeNodeAndUpdateContext(node, codeCtx);
+				}
+				catch (Exception ex)
+				{
+					throw new ArgumentException($"Analyzing error in node starting at char {node.InFileCharIndex}: \'{ex.Message}\'.");
+				}
+			}
 
 			return result;
 		}
