@@ -18,7 +18,7 @@ namespace nvul_compiler.Services
 	 * вынужденное частичное дублирование функционала анализатора - 
 	 * в части проверки объявления переменной, но для других целей.
 	 */
-	public class Parser
+	public sealed class Parser
 	{
 		/* Структура служит для выделения последовательности символов в строке.
 		 */
@@ -36,12 +36,12 @@ namespace nvul_compiler.Services
 		}
 
 		public const char LineDelimiter = ';';
-		protected readonly NvulConfiguration _configuration;
+		internal readonly NvulConfiguration _configuration;
 
-		protected readonly List<NvulKeyword> _varTypes;
-		protected readonly List<NvulKeyword> _cycleAndConditionalOperators;
-		protected readonly List<NvulOperator> _operatorsByPriorityDescending;
-		protected readonly StringEvaluator _operatorsEvaluator;
+		internal readonly List<NvulKeyword> _varTypes;
+		internal readonly List<NvulKeyword> _cycleAndConditionalOperators;
+		internal readonly List<NvulOperator> _operatorsByPriorityDescending;
+		internal readonly StringEvaluator _operatorsEvaluator;
 
 		public Parser(NvulConfiguration configuration)
 		{
@@ -64,12 +64,12 @@ namespace nvul_compiler.Services
 		}
 
 		// Имена перменных начинаются на букву, продолжаются на букву или цифру.
-		protected bool VariableNameIsOk(string varname) => !string.IsNullOrEmpty(varname)
+		internal bool VariableNameIsOk(string varname) => !string.IsNullOrEmpty(varname)
 			&& char.IsLetter(varname[0])
 			&& varname.Skip(1).All(x => char.IsLetterOrDigit(x));
 
 		// Строка соотвествует синтаксису декларации 'type name;'.
-		protected bool IsDeclarationString(string line, out DeclarationNode? Node, IList<string>? declaredNames = null)
+		internal bool IsDeclarationString(string line, out DeclarationNode? Node, IList<string>? declaredNames = null)
 		{
 			Node = null;
 
@@ -91,7 +91,7 @@ namespace nvul_compiler.Services
 		}
 
 		// Строка соответствует синтаксису присвоения 'name = value;'.
-		protected bool IsAssignmentString(string line, out AssignmentNode? Node, IList<string>? declaredNames = null)
+		internal bool IsAssignmentString(string line, out AssignmentNode? Node, IList<string>? declaredNames = null)
 		{
 			Node = null;
 
@@ -113,9 +113,9 @@ namespace nvul_compiler.Services
 			return true;
 		}
 
-		protected readonly char[] opening = new char[] { '(', '[', '{' };
-		protected readonly char[] closing = new char[] { ')', ']', '}' };
-		protected int FindBalancingBracketIndex(string line, int openIndex)
+		internal readonly char[] opening = new char[] { '(', '[', '{' };
+		internal readonly char[] closing = new char[] { ')', ']', '}' };
+		internal int FindBalancingBracketIndex(string line, int openIndex)
 		{
 			if (!(opening.Contains(line[openIndex])))
 				throw new ArgumentException("Opening bracket not found on index.");
@@ -142,7 +142,7 @@ namespace nvul_compiler.Services
 		}
 
 		// Строка соответствует синтаксису 'operator(condition){childs}'.
-		protected bool IsCycleOrSimpleConditionalString(string line, out INodeWithConditionAndChilds? Node, IList<string>? declaredNames = null)
+		internal bool IsCycleOrSimpleConditionalString(string line, out INodeWithConditionAndChilds? Node, IList<string>? declaredNames = null)
 		{
 			Node = null;
 
@@ -188,7 +188,7 @@ namespace nvul_compiler.Services
 		}
 
 		// Строка соотвествует синтаксису 'val1 operator val2'.
-		protected bool IsOperatorString(string line, out OperatorNode? Node, IList<string>? declaredNames = null)
+		internal bool IsOperatorString(string line, out OperatorNode? Node, IList<string>? declaredNames = null)
 		{
 			Node = null;
 
@@ -216,7 +216,7 @@ namespace nvul_compiler.Services
 			return true;
 		}
 
-		protected bool IsNumericLiteralString(string line, out ILiteralNode? Node)
+		internal bool IsNumericLiteralString(string line, out ILiteralNode? Node)
 		{
 			Node = null;
 
@@ -233,7 +233,7 @@ namespace nvul_compiler.Services
 
 			return false;
 		}
-		protected bool IsBooleanLiteralString(string line, out BoolLiteral? Node)
+		internal bool IsBooleanLiteralString(string line, out BoolLiteral? Node)
 		{
 			Node = null;
 
@@ -269,7 +269,7 @@ namespace nvul_compiler.Services
 			return false;
 		}
 
-		protected bool IsFunctionCallString(string line, out FunctionCallNode? Node, IList<string>? declaredNames)
+		internal bool IsFunctionCallString(string line, out FunctionCallNode? Node, IList<string>? declaredNames)
 		{
 			Node = null;
 
@@ -393,7 +393,7 @@ namespace nvul_compiler.Services
 			return result;
 		}
 
-		protected IEnumerable<ICodeNode> ParseNvulCodeYield(string nvulCode, IList<string>? declaredNames = null)
+		internal IEnumerable<ICodeNode> ParseNvulCodeYield(string nvulCode, IList<string>? declaredNames = null)
 		{
 			var enumer = GetParsingEnumerator(nvulCode, declaredNames);
 

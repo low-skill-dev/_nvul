@@ -376,5 +376,7 @@ namespace nvul_compiler.Services
 
 			return result;
 		}
+
+		public bool AnalyzeNvulNodes(IEnumerable<ICodeNode> nodes) => AnalyzeNvulNodes(nodes, null);
 	}
 }

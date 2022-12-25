@@ -1,9 +1,15 @@
 FROM node
-WORKDIR /app/
-COPY ["package.json", "package-lock.json", "./"]
-RUN ["npm", "install"]
+WORKDIR /app
+COPY ["package.json","package-lock.json","tsconfig.json","declaration.d.ts", "./"]
+
+RUN ["npm", "install", "-g", "typescript"]
 RUN ["npm", "install","serve","-g"]
+RUN ["npm", "install"]
+
 COPY ["src/", "./src/"]
 COPY ["public/","./public/"]
+
+EXPOSE 3000
+
 RUN ["npm", "run", "build"]
 CMD ["serve","-s", "build"]

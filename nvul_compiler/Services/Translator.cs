@@ -88,7 +88,7 @@ namespace nvul_compiler.Services
 			throw new NotImplementedException($"The passed code node has an unkown type: {((object)node).GetType().FullName}.");
 		}
 
-		protected IEnumerator<string> GetTranslatingEnumerator(IEnumerable<ICodeNode> nodes, bool isTopLevel, Dictionary<string, NvulKeyword> vartypesWithAddingRequired)
+		public IEnumerator<string> GetTranslatingEnumerator(IEnumerable<ICodeNode> nodes, bool isTopLevel, Dictionary<string, NvulKeyword> vartypesWithAddingRequired)
 		{
 			foreach (var node in nodes)
 			{

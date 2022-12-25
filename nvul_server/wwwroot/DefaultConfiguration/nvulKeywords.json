@@ -3,7 +3,7 @@
     "Word": "float",
     "Type": "vartype",
     "TranslationString": "double",
-	"UsageRequiresAdding":"var FloatInputFunction = () => double.Parse(Console.ReadLine()!);",
+	"UsageRequiresAdding":"var FloatInputFunction = () => double.Parse(Console.ReadLine()!);"
   },
   {
     "Word": "logical",
@@ -14,7 +14,7 @@
     "Word": "integer",
     "Type": "vartype",
     "TranslationString": "long",
-	"UsageRequiresAdding":"var IntegerInputFunction = () => long.Parse(Console.ReadLine()!);",
+	"UsageRequiresAdding":"var IntegerInputFunction = () => long.Parse(Console.ReadLine()!);"
   },
   {
     "Word": "matrix",

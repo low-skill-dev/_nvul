@@ -3,14 +3,14 @@
 		"FunctionName": "InputIntegerValue",
 		"EvaluatesTo": "integer",
 		"ApplicableTypes": null,
-		"Arguments": null
+		"Arguments": null,
 		"TranslationString":"IntegerInputFunction"
 	},
 	{
 		"FunctionName": "InputFloatValue",
 		"EvaluatesTo": "float",
 		"ApplicableTypes": null,
-		"Arguments": null
+		"Arguments": null,
 		"TranslationString":"FloatInputFunction"
 	},
 	{

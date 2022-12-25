@@ -16,7 +16,7 @@ namespace nvul_compiler.Services
 	* скобки (), а также функции и операторы в соответствии с вариантом. 
 	* 18.   sin
 	*/
-	public class StringEvaluator
+	internal class StringEvaluator
 	{
 		internal struct PrioritizedOperation
 		{
