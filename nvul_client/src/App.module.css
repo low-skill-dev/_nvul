@@ -2,9 +2,10 @@
     box-sizing: border-box;
     display:flexbox;
     width: 100%;
-    padding: 1%;
+    margin: 0px;
+    padding: 0px;
     font-family: 'Courier New', Courier, monospace;
-    font-size: 2vh;
+    font-size: calc(12px + 1vh);
     overflow: hidden;
     text-overflow: clip;
     text-align: center;
@@ -12,11 +13,11 @@
 .appHeader{
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-weight: bolder;
-    font-size: 7vh;
+    font-size: calc(24px + 1vh);
 }
 .appSubheader{
     font-weight: normal;
-    font-size: 3vh;
+    font-size: calc(16px + 1vh);
     padding-bottom: 2vh;
 }
 .compilerHolder{

@@ -11,7 +11,7 @@ namespace nvul_compiler.Models.Configuration
 		public string FunctionName { get; set; }
 		[Obsolete]
 		public string? AliasName { get; set; }
-		public string EvaluatesTo { get; set; }
+		public string? EvaluatesTo { get; set; }
 		public IList<string>? ApplicableTypes { get; set; }
 		public NvulFunctionParameters? Arguments { get; set; }
 		public string TranslationString { get; set; }

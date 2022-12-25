@@ -50,7 +50,7 @@ namespace nvul_server.tests.Endpoints
 			var testString = "matrix myMtr; myMtr = IntMatrix.FactoryInputCreate(2,2);" +
 				"integer c1; c1=1; while(c1>0) { myMtr.SetVal(c1,0,0); }; PrintMatrix2(myMtr);";
 			var expectedResult = "IntegerMatrix myMtr;\r\nmyMtr = IntegerMatrix.InputCreate(2, 2);\r\nlong c1;\r\nc1 = 1;\r\nwhile((c1 > 0))\r\n{\r\nmyMtr.SetValue(c1, 0, 0);\r\n};\r\nConsole.WriteLine(myMtr);\r\n";
-			var result = await this.contoller.CompileCode(new(testString, this.nvulConfiguration));
+			var result = await this.contoller.CompileCode(new(testString, Utf8Json.JsonSerializer.ToJsonString(this.nvulConfiguration)));
 
 			Assert.IsType<OkObjectResult>(result);
 			var responseValue = ((OkObjectResult)result).Value;

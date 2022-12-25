@@ -1,0 +1,27 @@
+version: '3.4'
+
+services:
+  client:
+    restart: always
+    image: luminodiode/nvul_client
+    build: 
+      context: ./nvul_client
+      dockerfile: ./dockerfile
+
+  backend:
+    restart: always
+    image: luminodiode/nvul_server
+    build: 
+      context: ./nvul_server
+      dockerfile: ./dockerfile
+    environment:
+      - ASPNETCORE_URLS=http://+:5001
+      - ASPNETCORE_ENVIRONMENT=Production
+
+  proxy:
+    restart: always
+    image: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "5060:80"

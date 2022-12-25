@@ -370,7 +370,7 @@ namespace nvul_compiler.Services
 				}
 				catch (Exception ex)
 				{
-					throw new ArgumentException($"Analyzing error in node starting at char {node.InFileCharIndex}: \'{ex.Message}\'.");
+					throw new ArgumentException(ex.Message);
 				}
 			}
 

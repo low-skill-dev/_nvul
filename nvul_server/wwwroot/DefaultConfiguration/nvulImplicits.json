@@ -2,5 +2,13 @@
 	{
 		"Vartype": "integer",
 		"ImplicitTo": "float"
+	},
+	{
+		"Vartype": "byte",
+		"ImplicitTo": "float"
+	},
+	{
+		"Vartype": "byte",
+		"ImplicitTo": "integer"
 	}
 ]

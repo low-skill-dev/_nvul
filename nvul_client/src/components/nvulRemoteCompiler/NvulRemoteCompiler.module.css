@@ -3,7 +3,7 @@
     width: 100%;
     padding: 1%;
     font-family: 'Courier New', Courier, monospace;
-    font-size: 2vh;
+    font-size: calc(12px + 0.5vh);
     overflow: hidden;
     overflow-y: scroll;
     background-color: rgb(245, 255, 245);
@@ -13,13 +13,14 @@
     background-color: lightgreen;
     padding: 5px;
     border: 1px solid darkgray;
+    font-size: calc(12px + 1vh);
 
 }
 
 .actionButton {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-weight: bolder;
-    font-size: 2vh;
+    font-size: calc(12px + 1vh);
     margin: 2px;
 }
 

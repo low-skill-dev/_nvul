@@ -452,3 +452,9 @@ $RECYCLE.BIN/
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+
+[Cc]onf/
+[Ll]ogs/
+[Tt]emp/
+[Nn]ginx.exe

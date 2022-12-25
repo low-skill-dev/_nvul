@@ -2,142 +2,82 @@
 	{
 		"OperatorString": "+",
 		"OperatorPriority": 768,
-		"LeftType": "float",
-		"RightType": "float",
-		"EvaluatesTo": "float"
+		"LeftType": "действительное",
+		"RightType": "действительное",
+		"EvaluatesTo": "действительное"
 	},
 	{
 		"OperatorString": "-",
 		"OperatorPriority": 768,
-		"LeftType": "float",
-		"RightType": "float",
-		"EvaluatesTo": "float"
+		"LeftType": "действительное",
+		"RightType": "действительное",
+		"EvaluatesTo": "действительное"
 	},
 	{
 		"OperatorString": "*",
 		"OperatorPriority": 512,
-		"LeftType": "float",
-		"RightType": "float",
-		"EvaluatesTo": "float"
+		"LeftType": "действительное",
+		"RightType": "действительное",
+		"EvaluatesTo": "действительное"
 	},
 	{
 		"OperatorString": "/",
 		"OperatorPriority": 512,
-		"LeftType": "float",
-		"RightType": "float",
-		"EvaluatesTo": "float"
+		"LeftType": "действительное",
+		"RightType": "действительное",
+		"EvaluatesTo": "действительное"
 	},
 
 
 	{
 		"OperatorString": "+",
 		"OperatorPriority": 768,
-		"LeftType": "integer",
-		"RightType": "float",
-		"EvaluatesTo": "float"
+		"LeftType": "целое",
+		"RightType": "целое",
+		"EvaluatesTo": "целое"
 	},
 	{
 		"OperatorString": "-",
 		"OperatorPriority": 768,
-		"LeftType": "integer",
-		"RightType": "float",
-		"EvaluatesTo": "float"
+		"LeftType": "целое",
+		"RightType": "целое",
+		"EvaluatesTo": "целое"
 	},
 	{
 		"OperatorString": "*",
 		"OperatorPriority": 512,
-		"LeftType": "integer",
-		"RightType": "float",
-		"EvaluatesTo": "float"
+		"LeftType": "целое",
+		"RightType": "целое",
+		"EvaluatesTo": "целое"
 	},
 	{
 		"OperatorString": "/",
 		"OperatorPriority": 512,
-		"LeftType": "integer",
-		"RightType": "float",
-		"EvaluatesTo": "float"
-	},
-
-
-	{
-		"OperatorString": "+",
-		"OperatorPriority": 768,
-		"LeftType": "float",
-		"RightType": "integer",
-		"EvaluatesTo": "float"
-	},
-	{
-		"OperatorString": "-",
-		"OperatorPriority": 768,
-		"LeftType": "float",
-		"RightType": "integer",
-		"EvaluatesTo": "float"
-	},
-	{
-		"OperatorString": "*",
-		"OperatorPriority": 512,
-		"LeftType": "float",
-		"RightType": "integer",
-		"EvaluatesTo": "float"
-	},
-	{
-		"OperatorString": "/",
-		"OperatorPriority": 512,
-		"LeftType": "float",
-		"RightType": "integer",
-		"EvaluatesTo": "float"
-	},
-
-
-	{
-		"OperatorString": "+",
-		"OperatorPriority": 768,
-		"LeftType": "integer",
-		"RightType": "integer",
-		"EvaluatesTo": "integer"
-	},
-	{
-		"OperatorString": "-",
-		"OperatorPriority": 768,
-		"LeftType": "integer",
-		"RightType": "integer",
-		"EvaluatesTo": "integer"
-	},
-	{
-		"OperatorString": "*",
-		"OperatorPriority": 512,
-		"LeftType": "integer",
-		"RightType": "integer",
-		"EvaluatesTo": "integer"
-	},
-	{
-		"OperatorString": "/",
-		"OperatorPriority": 512,
-		"LeftType": "integer",
-		"RightType": "integer",
-		"EvaluatesTo": "integer"
+		"LeftType": "целое",
+		"RightType": "целое",
+		"EvaluatesTo": "целое"
 	},
 
 
 	{
 		"OperatorString": "<",
 		"OperatorPriority": 1024,
-		"LeftType": "float",
-		"RightType": "float",
-		"EvaluatesTo": "logical"
+		"LeftType": "действительное",
+		"RightType": "действительное",
+		"EvaluatesTo": "логическое"
 	},
 	{
 		"OperatorString": ">",
 		"OperatorPriority": 1024,
-		"LeftType": "float",
-		"RightType": "float",
-		"EvaluatesTo": "logical"
+		"LeftType": "действительное",
+		"RightType": "действительное",
+		"EvaluatesTo": "логическое"
 	},
 	{
 		"OperatorString": "==",
 		"OperatorPriority": 1024,
-		"LeftType": "float",
-		"RightType": "float",
-		"EvaluatesTo": "logical"
+		"LeftType": "действительное",
+		"RightType": "действительное",
+		"EvaluatesTo": "логическое"
 	}
 ]

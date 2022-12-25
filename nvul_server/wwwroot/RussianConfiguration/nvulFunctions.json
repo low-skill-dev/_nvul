@@ -1,113 +1,53 @@
 [
 	{
-		"FunctionName": "Print",
-		"EvaluatesTo": null,
-		"ApplicableTypes": [ "matrix" ],
-		"Arguments": null
-	},
-	{
-		"FunctionName": "InputIntegerValue",
-		"EvaluatesTo": "integer",
+		"FunctionName": "ВвестиЦелоеЗначение",
+		"EvaluatesTo": "целое",
 		"ApplicableTypes": null,
 		"Arguments": null
+		"TranslationString":"IntegerInputFunction"
 	},
 	{
-		"FunctionName": "InputFloatValue",
-		"EvaluatesTo": "float",
+		"FunctionName": "ВвестиДействительноеЗначение",
+		"EvaluatesTo": "действительное",
 		"ApplicableTypes": null,
 		"Arguments": null
+		"TranslationString":"FloatInputFunction"
 	},
 	{
-		"FunctionName": "InputLogicalValue",
-		"EvaluatesTo": "logical",
-		"ApplicableTypes": null,
-		"Arguments": null
-	},
-	{
-		"FunctionName": "InputMatrixValue",
-		"EvaluatesTo": "matrix",
-		"ApplicableTypes": null,
-		"Arguments": {
-			"ParametersTypes": [ "integer" ],
-			"ParametersDescription": [
-				"Matrix side size"
-			]
-		},
-		"TranslationString": "InputMatrix"
-	},
-	{
-		"FunctionName": "PrintMatrixValue",
+		"FunctionName": "ВывестиЗначение",
 		"EvaluatesTo": null,
 		"ApplicableTypes": null,
 		"Arguments": {
-			"ParametersTypes": [ "matrix" ],
-			"ParametersDescription": [
-				"Matrix to print"
-			]
-		}
-	},
-	{
-		"FunctionName": "PrintNumericValue",
-		"EvaluatesTo": null,
-		"ApplicableTypes": null,
-		"Arguments": {
-			"ParametersTypes": [ "float" ],
-			"ParametersDescription": [
-				""
-			]
+			"ParametersTypes": [ "действительное", "матрицаЦелых" ],
+			"ParametersDescription": null
 		},
 		"TranslationString": "Console.WriteLine"
 	},
 	{
-		"FunctionName": "IsNumbersNotEqual",
-		"EvaluatesTo": "logical",
+		"FunctionName": "МатрицаЦелых.СоздатьВводом",
+		"EvaluatesTo": "матрицаЦелых",
 		"ApplicableTypes": null,
 		"Arguments": {
-			"ParametersTypes": [ "float", "float" ],
-			"ParametersDescription": [
-				"",
-				""
-			]
-		}
-	},
-	{
-		"FunctionName": "IntMatrix.FactoryInputCreate",
-		"EvaluatesTo": "matrix",
-		"ApplicableTypes": null,
-		"Arguments": {
-			"ParametersTypes": [ "integer", "integer" ],
-			"ParametersDescription": [
-				"Matrix side 1 size",
-				"Matrix side 2 size"
-			]
+			"ParametersTypes": [ "целое", "целое" ],
+			"ParametersDescription": null
 		},
 		"TranslationString": "IntegerMatrix.InputCreate"
 	},
 	{
-		"FunctionName": "SetVal",
-		"EvaluatesTo": "matrix",
-		"ApplicableTypes": [ "matrix" ],
+		"FunctionName": "УстановитьЗачениеНаАдрес",
+		"EvaluatesTo": "матрицаЦелых",
+		"ApplicableTypes": [ "матрицаЦелых" ],
 		"Arguments": {
-			"ParametersTypes": [ "integer", "integer", "integer" ],
-			"ParametersDescription": [
-				"",
-				"",
-				""
-			]
+			"ParametersTypes": [ "целое", "целое", "целое" ],
+			"ParametersDescription": null
 		},
 		"TranslationString": "SetValue"
 	},
 	{
-		"FunctionName": "PrintMatrix2",
+		"FunctionName": "ОтсортироватьСтроки",
 		"EvaluatesTo": null,
-		"ApplicableTypes": null,
-		"Arguments": {
-			"ParametersTypes": [ "matrix"],
-			"ParametersDescription": [
-				""
-			]
-		},
-		"TranslationString": "Console.WriteLine"
+		"ApplicableTypes": [ "матрицаЦелых" ],
+		"Arguments": null,
+		"TranslationString": "SortRows"
 	}
-
 ]

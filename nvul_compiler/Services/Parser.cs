@@ -202,12 +202,17 @@ namespace nvul_compiler.Services
 			var foundOp = operatorsIndexes.Where(x => x.Operation.Priority == startPrior).MaxBy(x => x.Index);
 			var operatorIndex = foundOp.Index;
 			var opLen = foundOp.Operation.OperationString.Length;
-
-			Node = new OperatorNode(
-				ParseLine(line.Substring(0, operatorIndex).Trim(), declaredNames),
-				ParseLine(line.Substring(operatorIndex + opLen).Trim(), declaredNames),
-				line.Substring(operatorIndex, opLen));
-
+			try
+			{
+				Node = new OperatorNode(
+					ParseLine(line.Substring(0, operatorIndex).Trim(), declaredNames),
+					ParseLine(line.Substring(operatorIndex + opLen).Trim(), declaredNames),
+					line.Substring(operatorIndex, opLen));
+			}
+			catch(Exception ex)
+			{
+				throw new ArgumentException($"Operands of \'{line.Substring(operatorIndex, opLen)}\' parsing problem: {ex.Message}.");
+			}
 			return true;
 		}
 
@@ -410,7 +415,7 @@ namespace nvul_compiler.Services
 				}
 				catch(Exception ex)
 				{
-					throw new ArgumentException($"Parsing error in node starting at char {ln.Start}: \'{ex.Message}\'.");
+					throw new ArgumentException(ex.Message);
 				}
 				t.InFileCharIndex = ln.Start;
 				yield return t;

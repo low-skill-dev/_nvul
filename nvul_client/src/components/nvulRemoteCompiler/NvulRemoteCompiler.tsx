@@ -12,6 +12,13 @@ export const NvulRemoteCompiler: React.FC = ({ ...props }) => {
     const [compilationResult, setCompilationResult] = useState<string>("");
     const [isNetworkLocked, setIsNetworkLocked] = useState<boolean>(false);
 
+    useEffect(()=>{
+        try{
+            loadConfig("en");
+        } catch { }
+        console.log("compiler loaded.");
+    },[]);
+
     const loadConfig = async (lang: string) => {
         setIsNetworkLocked(true);
         setTimeout(() => { setIsNetworkLocked(false); }, 5000);
@@ -25,7 +32,9 @@ export const NvulRemoteCompiler: React.FC = ({ ...props }) => {
             if (response.status != 200)
                 setConfiguration(`Error: HTTP ${response.status}`);
             else
-                setConfiguration(response.data);
+                setConfiguration(JSON.stringify(response.data,null,1));
+
+            console.log(response.data);
         } catch { }
 
         setIsNetworkLocked(false);
@@ -36,7 +45,11 @@ export const NvulRemoteCompiler: React.FC = ({ ...props }) => {
         setTimeout(() => { setIsNetworkLocked(false); }, 5000);
 
         try {
-            const request = new CompilationRequest(codeInput, configuration, true);
+            const request = new CompilationRequest(
+                codeInput, 
+                configuration, 
+                true);
+
             const response = await NvulApiHelper.RequestCodeCompilation(request);
 
             if (response.status != 200) {
@@ -45,7 +58,8 @@ export const NvulRemoteCompiler: React.FC = ({ ...props }) => {
                 setErrorMessage(`Network error: HTTP ${response.status}`);
             } else {
                 const result = response.data;
-                setParsingResult(result.parsingResult ?? "");
+                setParsingResult(JSON.stringify(JSON.parse(
+                    result.parsingResult ?? ""),null,2));
                 setCompilationResult(result.compilationResult ?? "");
                 setErrorMessage(result.errorMessage ?? "");
             }
@@ -56,7 +70,7 @@ export const NvulRemoteCompiler: React.FC = ({ ...props }) => {
 
     return (
         <span>
-            <Collapsible trigger="Configuration" className={styles.collapsibleBlock} openedClassName={styles.collapsibleBlock}>
+            <Collapsible trigger="Configuration" className={styles.collapsibleBlock} openedClassName={styles.collapsibleBlock} transitionTime={100}>
                 <div className={styles.buttonsMenu}>
                     <button className={styles.actionButton} onClick={() => loadConfig("en")} disabled={isNetworkLocked}>Load default</button>
                     <button className={styles.actionButton} onClick={() => loadConfig("ru")} disabled={isNetworkLocked}>Load russian</button>
@@ -66,7 +80,7 @@ export const NvulRemoteCompiler: React.FC = ({ ...props }) => {
                 </textarea>
             </Collapsible>
 
-            <Collapsible trigger="Input code" className={styles.collapsibleBlock} openedClassName={styles.collapsibleBlock}>
+            <Collapsible trigger="Input code" className={styles.collapsibleBlock} openedClassName={styles.collapsibleBlock} transitionTime={100} open={true}>
                 <textarea value={codeInput} onChange={e => setCodeInput(e.target.value)} rows={15} className={styles.codeTextArea}>
 
                 </textarea>
@@ -76,13 +90,13 @@ export const NvulRemoteCompiler: React.FC = ({ ...props }) => {
                 </div>
             </Collapsible>
 
-            <Collapsible trigger="Parsing result" className={styles.collapsibleBlock} openedClassName={styles.collapsibleBlock}>
+            <Collapsible trigger="Parsing result" className={styles.collapsibleBlock} openedClassName={styles.collapsibleBlock} transitionTime={100}>
                 <textarea value={parsingResult} onChange={e=>setParsingResult(e.target.value)} rows={15} className={styles.codeTextArea}>
 
                 </textarea>
             </Collapsible>
 
-            <Collapsible trigger="Compilation result" className={styles.collapsibleBlock} openedClassName={styles.collapsibleBlock}>
+            <Collapsible trigger="Compilation result" className={styles.collapsibleBlock} openedClassName={styles.collapsibleBlock} transitionTime={100} open={true}>
                 <textarea value={compilationResult} onChange={e=>setCompilationResult(e.target.value)} rows={15} className={styles.codeTextArea}>
 
                 </textarea>

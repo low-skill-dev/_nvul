@@ -1,6 +1,6 @@
 [
 	{
-		"Vartype": "integer",
-		"ImplicitTo": "float"
-	}
+		"Vartype": "целое",
+		"ImplicitTo": "действительное"
+	},
 ]

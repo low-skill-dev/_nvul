@@ -47,6 +47,15 @@ namespace nvul_compiler.Services
 				var realNode = (FunctionCallNode)node;
 				if (realNode.NvulFunction is null) throw new ArgumentNullException("Translation must be known on the build stage.");
 				var varRef = realNode.isStatic ? string.Empty : $"{realNode.VariableName}.";
+				if(realNode.NvulFunction.EvaluatesTo is not null)
+				{
+					var evalsTo = realNode.NvulFunction.EvaluatesTo;
+					var foundKw = this._configuration.Keywords.FirstOrDefault(x => x.Word.Equals(evalsTo));
+					if(foundKw is not null)
+					{
+						vartypesWithAddingRequired?.TryAdd(evalsTo, foundKw);
+					}
+				}
 				return $"{varRef}{realNode.NvulFunction.TranslationString}({string.Join(", ", realNode.Arguments.Select(x => BuildNode(x, isTopLevel, vartypesWithAddingRequired)))})";
 			}
 			if (node is ILiteralNode)
@@ -59,6 +68,15 @@ namespace nvul_compiler.Services
 			{
 				var realNode = (OperatorNode)node;
 				if (realNode.NvulOperator is null) throw new ArgumentNullException("Translation must be known on the build stage.");
+				if (realNode.NvulOperator.EvaluatesTo is not null)
+				{
+					var evalsTo = realNode.NvulOperator.EvaluatesTo;
+					var foundKw = this._configuration.Keywords.FirstOrDefault(x => x.Word.Equals(evalsTo));
+					if (foundKw is not null)
+					{
+						vartypesWithAddingRequired?.TryAdd(evalsTo, foundKw);
+					}
+				}
 				return $"({BuildNode(realNode.Left, isTopLevel, vartypesWithAddingRequired)} {realNode.NvulOperator.TranslationString ?? realNode.NvulOperator.OperatorString} {BuildNode(realNode.Right, isTopLevel, vartypesWithAddingRequired)})";
 			}
 			if (node is VariableRefNode)
@@ -81,7 +99,7 @@ namespace nvul_compiler.Services
 				}
 				catch (Exception ex)
 				{
-					throw new ArgumentException($"Translating error in node starting at char {node.InFileCharIndex}: \'{ex.Message}\'.");
+					throw new ArgumentException(ex.Message);
 				}
 				yield return builded;
 			}

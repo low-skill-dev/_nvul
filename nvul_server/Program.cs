@@ -23,7 +23,9 @@ namespace image_indexator_backend
 				opts.AddConsole();
 			});
 
-			builder.Services.AddControllers();
+			builder.Services.AddControllers()
+				.AddJsonOptions(conf => conf.JsonSerializerOptions.PropertyNameCaseInsensitive=true)
+				.AddNewtonsoftJson();
 			builder.Services.AddSingleton<NvulConfigurationProvider>();
 
 			if (builder.Environment.IsDevelopment())
