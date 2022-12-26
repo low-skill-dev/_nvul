@@ -1,0 +1,258 @@
+{
+ "nvulFunctions": [
+  {
+   "functionName": "ВвестиЦелоеЗначение",
+   "aliasName": null,
+   "evaluatesTo": "целое",
+   "applicableTypes": null,
+   "arguments": null,
+   "translationString": "IntegerInputFunction"
+  },
+  {
+   "functionName": "ВвестиДействительноеЗначение",
+   "aliasName": null,
+   "evaluatesTo": "действительное",
+   "applicableTypes": null,
+   "arguments": null,
+   "translationString": "FloatInputFunction"
+  },
+  {
+   "functionName": "ВывестиЗначение",
+   "aliasName": null,
+   "evaluatesTo": null,
+   "applicableTypes": null,
+   "arguments": {
+    "parametersTypes": [
+     "матрицаЦелых"
+    ],
+    "parametersDescription": null
+   },
+   "translationString": "Console.WriteLine"
+  },
+  {
+   "functionName": "ВывестиЗначение",
+   "aliasName": null,
+   "evaluatesTo": null,
+   "applicableTypes": null,
+   "arguments": {
+    "parametersTypes": [
+     "действительное"
+    ],
+    "parametersDescription": null
+   },
+   "translationString": "Console.WriteLine"
+  },
+  {
+   "functionName": "МатрицаЦелых.СоздатьВводом",
+   "aliasName": null,
+   "evaluatesTo": "матрицаЦелых",
+   "applicableTypes": null,
+   "arguments": {
+    "parametersTypes": [
+     "целое",
+     "целое"
+    ],
+    "parametersDescription": null
+   },
+   "translationString": "IntegerMatrix.InputCreate"
+  },
+  {
+   "functionName": "УстановитьЗачениеНаАдрес",
+   "aliasName": null,
+   "evaluatesTo": "матрицаЦелых",
+   "applicableTypes": [
+    "матрицаЦелых"
+   ],
+   "arguments": {
+    "parametersTypes": [
+     "целое",
+     "целое",
+     "целое"
+    ],
+    "parametersDescription": null
+   },
+   "translationString": "SetValue"
+  },
+  {
+   "functionName": "ОтсортироватьСтроки",
+   "aliasName": null,
+   "evaluatesTo": null,
+   "applicableTypes": [
+    "матрицаЦелых"
+   ],
+   "arguments": null,
+   "translationString": "SortRows"
+  }
+ ],
+ "implicits": [
+  {
+   "vartype": "integer",
+   "implicitTo": "float"
+  },
+  {
+   "vartype": "integer",
+   "implicitTo": "действительное"
+  },
+  
+  {
+   "vartype": "целое",
+   "implicitTo": "integer"
+  },
+  {
+   "vartype": "integer",
+   "implicitTo": "целое"
+  },
+  {
+   "vartype": "целое",
+   "implicitTo": "float"
+  },
+  {
+   "vartype": "целое",
+   "implicitTo": "действительное"
+  },
+  
+  {
+   "vartype": "логическое",
+   "implicitTo": "logical"
+  },
+  
+  {
+   "vartype": "logical",
+   "implicitTo": "float"
+  },
+ ],
+ "keywords": [
+  {
+   "word": "действительное",
+   "alias": null,
+   "type": "vartype",
+   "translationString": "double",
+   "usageRequiresAdding": "double FloatInputFunction() => double.Parse(Console.ReadLine()!);"
+  },
+  {
+   "word": "логическое",
+   "alias": null,
+   "type": "vartype",
+   "translationString": "bool",
+   "usageRequiresAdding": null
+  },
+  {
+   "word": "целое",
+   "alias": null,
+   "type": "vartype",
+   "translationString": "long",
+   "usageRequiresAdding": "long IntegerInputFunction() => long.Parse(Console.ReadLine()!);"
+  },
+  {
+   "word": "матрицаЦелых",
+   "alias": null,
+   "type": "vartype",
+   "translationString": "IntegerMatrix",
+   "usageRequiresAdding": "class IntegerMatrix  {  	private long[][] _source; private IntegerMatrix(long rows, long cols) { _source = new long[rows][]; for (int i = 0; i < rows; i++) this._source[i] = new long[cols]; }  	public static IntegerMatrix FactoryCreate(long rows, long cols) { return new IntegerMatrix(rows, cols); }  	public static IntegerMatrix InputCreate(long rows, long cols) { IntegerMatrix result = new IntegerMatrix(rows, cols); for (int r = 0; r < result._source.Length; r++) { for (int c = 0; c < result._source[r].Length; c++) { Console.Write($\"[{r},{c}]=\"); result._source[r][c] = long.Parse(Console.ReadLine() ?? \"0\"); } } return result; }  	public void SortRows() => _source = _source.OrderBy(x => x.Sum()).ToArray(); public void SetValue(long val, long row, long col) => this._source[row][col] = val; public override string ToString()  	{  		int maxLen = 0;    /* I dont have time to optimize*/    foreach (var r in _source) foreach (var i in r) if (i.ToString().Length > maxLen) maxLen = i.ToString().Length; StringBuilder sb = new(maxLen / 2 * _source.Length); for (int r = 0; r < _source.Length; r++) { for (int c = 0; c < _source[r].Length; c++) { var str = _source[r][c].ToString(); sb.Append(new string(' ', maxLen - str.Length + 1) + str); } sb.AppendLine(); }  		return sb.ToString();  	}  }"
+  },
+  {
+   "word": "while",
+   "alias": null,
+   "type": "cycleOperator",
+   "translationString": "while",
+   "usageRequiresAdding": null
+  },
+  {
+   "word": "if",
+   "alias": null,
+   "type": "conditionalOperator",
+   "translationString": "if",
+   "usageRequiresAdding": null
+  }
+ ],
+ "operators": [
+ {
+   "operatorString": "+",
+   "operatorPriority": 768,
+   "leftType": "целое",
+   "rightType": "целое",
+   "evaluatesTo": "целое",
+   "translationString": null
+  },
+  {
+   "operatorString": "-",
+   "operatorPriority": 768,
+   "leftType": "целое",
+   "rightType": "целое",
+   "evaluatesTo": "целое",
+   "translationString": null
+  },
+  {
+   "operatorString": "*",
+   "operatorPriority": 512,
+   "leftType": "целое",
+   "rightType": "целое",
+   "evaluatesTo": "целое",
+   "translationString": null
+  },
+  {
+   "operatorString": "/",
+   "operatorPriority": 512,
+   "leftType": "целое",
+   "rightType": "целое",
+   "evaluatesTo": "целое",
+   "translationString": null
+  },
+  {
+   "operatorString": "+",
+   "operatorPriority": 768,
+   "leftType": "действительное",
+   "rightType": "действительное",
+   "evaluatesTo": "действительное",
+   "translationString": null
+  },
+  {
+   "operatorString": "-",
+   "operatorPriority": 768,
+   "leftType": "действительное",
+   "rightType": "действительное",
+   "evaluatesTo": "действительное",
+   "translationString": null
+  },
+  {
+   "operatorString": "*",
+   "operatorPriority": 512,
+   "leftType": "действительное",
+   "rightType": "действительное",
+   "evaluatesTo": "действительное",
+   "translationString": null
+  },
+  {
+   "operatorString": "/",
+   "operatorPriority": 512,
+   "leftType": "действительное",
+   "rightType": "действительное",
+   "evaluatesTo": "действительное",
+   "translationString": null
+  },
+  {
+   "operatorString": "<",
+   "operatorPriority": 1024,
+   "leftType": "действительное",
+   "rightType": "действительное",
+   "evaluatesTo": "логическое",
+   "translationString": null
+  },
+  {
+   "operatorString": ">",
+   "operatorPriority": 1024,
+   "leftType": "действительное",
+   "rightType": "действительное",
+   "evaluatesTo": "логическое",
+   "translationString": null
+  },
+  {
+   "operatorString": "==",
+   "operatorPriority": 1024,
+   "leftType": "действительное",
+   "rightType": "действительное",
+   "evaluatesTo": "логическое",
+   "translationString": null
+  }
+ ]
+}

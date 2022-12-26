@@ -160,7 +160,7 @@ namespace nvul_compiler.Services
 					x.LeftType.Equals(leftResultingType)
 					&&
 					x.RightType.Equals(rightResultingType)
-					);
+				);
 
 				realNode.NvulOperator = exactMatch;
 				if (exactMatch is not null)
@@ -193,15 +193,16 @@ namespace nvul_compiler.Services
 				var callParamsTypes = realNode.Arguments.Select(x => ValidateUsageAndGetResultingType(x, currentContext)).ToList();
 
 				var foundByName = this._configuration.NvulFunctions.Where(x => x.FunctionName.Equals(realNode.FunctionName));
+				// 
 				var found = foundByName.FirstOrDefault(x =>
 				{
-					var types = (x.Arguments ?? new NvulFunctionParameters(Array.Empty<string>(), Array.Empty<string>())).ParametersTypes;
+					var funcParamsTypes = (x.Arguments ?? new NvulFunctionParameters(Array.Empty<string>(), Array.Empty<string>())).ParametersTypes;
 
-					if (callParamsTypes.Count != types.Count) return false;
+					if (callParamsTypes.Count != funcParamsTypes.Count) return false;
 
-					for (int i = 0; i < types.Count; i++)
+					for (int i = 0; i < funcParamsTypes.Count; i++)
 					{
-						if (callParamsTypes[i] == null || !CanBeImplicitlyConverted(callParamsTypes[i]!, types[i]))
+						if (callParamsTypes[i] == null || !CanBeImplicitlyConverted(callParamsTypes[i]!, funcParamsTypes[i]))
 							return false;
 					}
 
@@ -214,6 +215,30 @@ namespace nvul_compiler.Services
 				if (found is null)
 				{
 					throw new ArgumentException($"There is no function exists with name \'{realNode.FunctionName}\' and parameters types [{string.Join(",", callParamsTypes)}].");
+				}
+
+				if (realNode.VariableName is not null)
+				{
+					if(currentContext is null)	throw new ArgumentException();
+		
+					var callerVariable = currentContext.GetVariablesContextsRecursively().FirstOrDefault(x => x.Name.Equals(realNode.VariableName));
+					if(callerVariable is null || callerVariable.LastAssignedValue is null)
+					{
+						throw new ArgumentException($"You are trying to call function \'{realNode.FunctionName}\' on variable" +
+							$" \'{realNode.VariableName}\' which was not declared or not assigned.");
+					}
+					if(!(found.ApplicableTypes?.Any(x=> x.Equals(callerVariable.Type)) ?? false))
+					{
+						throw new ArgumentException($"You are trying to call function \'{realNode.FunctionName}\' on variable" +
+							$" \'{realNode.VariableName}\' of type ${callerVariable.Type} which does not support this function.");
+					}
+				}
+				else // call is static
+				{
+					if (found.ApplicableTypes is not null)
+					{
+						throw new ArgumentException($"You are trying to call an exemplar function \'{realNode.FunctionName}\' as static.");
+					}
 				}
 
 				realNode.NvulFunction = found;
@@ -321,7 +346,10 @@ namespace nvul_compiler.Services
 				}
 				if (!conditionResultingType.Equals("logical"))
 				{
-					throw new ArgumentException("You are trying to use non-logical-value expression as the condition.");
+					if (!CanBeImplicitlyConverted(conditionResultingType, "logical"))
+					{
+						throw new ArgumentException("You are trying to use non-logical-value expression as the condition.");
+					}
 				}
 
 				var childs = realNode.Childs;

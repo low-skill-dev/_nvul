@@ -8,6 +8,6 @@ namespace nvul_compiler.Models.CodeTree
 {
 	public interface ICodeNode
 	{
-		public int InFileCharIndex { get; set; }
+		public int InNodeCharIndex { get; set; }
 	}
 }

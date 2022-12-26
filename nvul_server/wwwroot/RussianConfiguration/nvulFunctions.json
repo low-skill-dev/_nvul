@@ -1,53 +1,85 @@
 [
-	{
-		"FunctionName": "ВвестиЦелоеЗначение",
-		"EvaluatesTo": "целое",
-		"ApplicableTypes": null,
-		"Arguments": null
-		"TranslationString":"IntegerInputFunction"
-	},
-	{
-		"FunctionName": "ВвестиДействительноеЗначение",
-		"EvaluatesTo": "действительное",
-		"ApplicableTypes": null,
-		"Arguments": null
-		"TranslationString":"FloatInputFunction"
-	},
-	{
-		"FunctionName": "ВывестиЗначение",
-		"EvaluatesTo": null,
-		"ApplicableTypes": null,
-		"Arguments": {
-			"ParametersTypes": [ "действительное", "матрицаЦелых" ],
-			"ParametersDescription": null
-		},
-		"TranslationString": "Console.WriteLine"
-	},
-	{
-		"FunctionName": "МатрицаЦелых.СоздатьВводом",
-		"EvaluatesTo": "матрицаЦелых",
-		"ApplicableTypes": null,
-		"Arguments": {
-			"ParametersTypes": [ "целое", "целое" ],
-			"ParametersDescription": null
-		},
-		"TranslationString": "IntegerMatrix.InputCreate"
-	},
-	{
-		"FunctionName": "УстановитьЗачениеНаАдрес",
-		"EvaluatesTo": "матрицаЦелых",
-		"ApplicableTypes": [ "матрицаЦелых" ],
-		"Arguments": {
-			"ParametersTypes": [ "целое", "целое", "целое" ],
-			"ParametersDescription": null
-		},
-		"TranslationString": "SetValue"
-	},
-	{
-		"FunctionName": "ОтсортироватьСтроки",
-		"EvaluatesTo": null,
-		"ApplicableTypes": [ "матрицаЦелых" ],
-		"Arguments": null,
-		"TranslationString": "SortRows"
-	}
-]
+  {
+   "functionName": "ВвестиЦелоеЗначение",
+   "aliasName": null,
+   "evaluatesTo": "целое",
+   "applicableTypes": null,
+   "arguments": null,
+   "translationString": "IntegerInputFunction"
+  },
+  {
+   "functionName": "ВвестиДействительноеЗначение",
+   "aliasName": null,
+   "evaluatesTo": "действительное",
+   "applicableTypes": null,
+   "arguments": null,
+   "translationString": "FloatInputFunction"
+  },
+  {
+   "functionName": "ВывестиЗначениеМатрицы",
+   "aliasName": null,
+   "evaluatesTo": null,
+   "applicableTypes": null,
+   "arguments": {
+    "parametersTypes": [
+     "матрицаЦелых"
+    ],
+    "parametersDescription": null
+   },
+   "translationString": "Console.WriteLine"
+  },
+  {
+   "functionName": "ВывестиЗначение",
+   "aliasName": null,
+   "evaluatesTo": null,
+   "applicableTypes": null,
+   "arguments": {
+    "parametersTypes": [
+     "действительное"
+    ],
+    "parametersDescription": null
+   },
+   "translationString": "Console.WriteLine"
+  },
+  {
+   "functionName": "МатрицаЦелых.СоздатьВводом",
+   "aliasName": null,
+   "evaluatesTo": "матрицаЦелых",
+   "applicableTypes": null,
+   "arguments": {
+    "parametersTypes": [
+     "целое",
+     "целое"
+    ],
+    "parametersDescription": null
+   },
+   "translationString": "IntegerMatrix.InputCreate"
+  },
+  {
+   "functionName": "УстановитьЗачениеНаАдрес",
+   "aliasName": null,
+   "evaluatesTo": "матрицаЦелых",
+   "applicableTypes": [
+    "матрицаЦелых"
+   ],
+   "arguments": {
+    "parametersTypes": [
+     "целое",
+     "целое",
+     "целое"
+    ],
+    "parametersDescription": null
+   },
+   "translationString": "SetValue"
+  },
+  {
+   "functionName": "ОтсортироватьСтроки",
+   "aliasName": null,
+   "evaluatesTo": null,
+   "applicableTypes": [
+    "матрицаЦелых"
+   ],
+   "arguments": null,
+   "translationString": "SortRows"
+  }
+ ]

@@ -9,7 +9,7 @@ namespace nvul_compiler.Models.CodeTree
 {
 	public class DeclarationNode:ICodeNode
 	{
-		public int InFileCharIndex { get; set; }
+		public int InNodeCharIndex { get; set; }
 		public string VariableType { get; set; }
 		public string VariableName { get; set; }
 		public NvulKeyword? NvulKeyword { get; set; }

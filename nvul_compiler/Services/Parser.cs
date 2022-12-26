@@ -55,7 +55,14 @@ namespace nvul_compiler.Services
 			this._operatorsByPriorityDescending = this._configuration.Operators.OrderByDescending(x => x.OperatorPriority).ToList();
 			this._operatorsEvaluator = new(false, false);
 			this._operatorsByPriorityDescending.ForEach(x => { try { this._operatorsEvaluator.AddOperator(x.OperatorString, (x, y) => 0, x.OperatorPriority); } catch { } });
-			this._configuration.NvulFunctions.ToList().ForEach(x => this._operatorsEvaluator.AddFunction(x.FunctionName, (y) => 0));
+			foreach (var toAdd in this._configuration.NvulFunctions.ToList())
+			{
+				try
+				{
+					this._operatorsEvaluator.AddFunction(toAdd.FunctionName, (y) => 0);
+				}
+				catch { }
+			}
 
 			// Некоторые коллекции энумеруются заранее для устранения множественного повторения данного процесса.
 			this._varTypes = this._configuration.Keywords.Where(x => x.Type.Equals("vartype")).ToList();
@@ -148,13 +155,13 @@ namespace nvul_compiler.Services
 
 			var cycleOperator = this._cycleAndConditionalOperators.FirstOrDefault(x => line.StartsWith(x.Word));
 			if (cycleOperator is null) return false;
-			
+
 			var conditionNodeStartIndex = line.IndexOf('(');
 			var conditionNodeEndIndex = FindBalancingBracketIndex(line, conditionNodeStartIndex);
 
 			if (conditionNodeEndIndex == -1)
 				throw new ArgumentException($"Unable to find bracket closing \'{cycleOperator.Word}\' operator condition.");
-		
+
 			int childNodeStartIndex = -1;
 			int childNodeEndIndex = -1;
 			for (int i = conditionNodeEndIndex + 1; i < line.Length; i++)
@@ -167,9 +174,12 @@ namespace nvul_compiler.Services
 				}
 			}
 
-			if (childNodeStartIndex==-1 || childNodeEndIndex==-1)
+			if (childNodeStartIndex == -1 || childNodeEndIndex == -1)
 			{
 				throw new ArgumentException("Unable to find child code block after condition. It must appear in \'operator(condition){...childs}\' format.");
+			}
+			if(line.Skip(childNodeEndIndex+1).Any(c=> !char.IsWhiteSpace(c) && c!=';')){
+				throw new ArgumentException("Child block of cycle or conditional operator must be followed by \';\'.");
 			}
 
 			var conditionNode = ParseLine(line.Substring(conditionNodeStartIndex + 1, conditionNodeEndIndex - conditionNodeStartIndex - 1).Trim(), declaredNames);
@@ -209,7 +219,7 @@ namespace nvul_compiler.Services
 					ParseLine(line.Substring(operatorIndex + opLen).Trim(), declaredNames),
 					line.Substring(operatorIndex, opLen));
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				throw new ArgumentException($"Operands of \'{line.Substring(operatorIndex, opLen)}\' parsing problem: {ex.Message}.");
 			}
@@ -413,11 +423,11 @@ namespace nvul_compiler.Services
 				{
 					t = ParseLine(nvulCode.Substring(ln.Start, ln.Count).Trim(), declaredNames);
 				}
-				catch(Exception ex)
+				catch (Exception ex)
 				{
 					throw new ArgumentException(ex.Message);
 				}
-				t.InFileCharIndex = ln.Start;
+				t.InNodeCharIndex = ln.Start;
 				yield return t;
 			}
 

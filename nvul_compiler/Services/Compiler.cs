@@ -47,11 +47,13 @@ namespace nvul_compiler.Services
 			var enumer = parser.GetParsingEnumerator(nvulCode);
 			var rootContext = new CodeContext(null);
 			var addingRequired = new Dictionary<string, NvulKeyword>();
+			parsingBuilder.Append('[');
 			while (enumer.MoveNext())
 			{
 				var parsed = enumer.Current;
 				analyzer.AnalyzeNodeAndUpdateContext(parsed, rootContext);
 				parsingBuilder.AppendLine(Newtonsoft.Json.JsonConvert.SerializeObject(parsed));
+				parsingBuilder.Append(',');
 				codeBuilder.Append(translator.BuildNode(parsed, false, addingRequired));
 				codeBuilder.Append(';');
 				codeBuilder.AppendLine();
@@ -62,6 +64,8 @@ namespace nvul_compiler.Services
 				codeBuilder.AppendLine(s);
 			}
 
+			parsingBuilder.Remove(parsingBuilder.Length - 1, 1); // last coma
+			parsingBuilder.Append(']');
 			parsingResult = parsingBuilder.ToString();
 			return codeBuilder.ToString();
 		}

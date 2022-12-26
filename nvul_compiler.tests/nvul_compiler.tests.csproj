@@ -28,6 +28,7 @@
 		<None Remove="Configuration\nvulKeywords.json" />
 		<None Remove="Configuration\nvulOperators.json" />
 		<None Remove="Configuration\nvulWordTypes.json" />
+		<None Remove="Configuration\Russian\fullConfig.json" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -45,6 +46,9 @@
 		</Content>
 		<Content Include="Configuration\nvulWordTypes.json">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Configuration\Russian\fullConfig.json">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
 

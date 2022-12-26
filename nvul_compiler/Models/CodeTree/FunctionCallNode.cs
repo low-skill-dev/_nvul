@@ -9,7 +9,7 @@ namespace nvul_compiler.Models.CodeTree
 {
 	public class FunctionCallNode:ICodeNode
 	{
-		public int InFileCharIndex { get; set; }
+		public int InNodeCharIndex { get; set; }
 		public bool isStatic => this.VariableName is null;
 		// null if method is static!
 		public string? VariableName { get; set; }

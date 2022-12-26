@@ -79,32 +79,32 @@ namespace nvul_server.Services
 		{
 			var webPath = this._environment.WebRootPath;
 
-			var nvulKeywords = Utf8Json.JsonSerializer.Deserialize<NvulKeyword[]>(System.IO.File.ReadAllText(
+			var nvulKeywords = Newtonsoft.Json.JsonConvert.DeserializeObject<NvulKeyword[]>(System.IO.File.ReadAllText(
 				Path.Join(webPath, "/DefaultConfiguration/nvulKeywords.json")));
-			var nvulOperators = Utf8Json.JsonSerializer.Deserialize<NvulOperator[]>(System.IO.File.ReadAllText(
+			var nvulOperators = Newtonsoft.Json.JsonConvert.DeserializeObject<NvulOperator[]>(System.IO.File.ReadAllText(
 				Path.Join(webPath, "/DefaultConfiguration/nvulOperators.json")));
-			var nvulFunctions = Utf8Json.JsonSerializer.Deserialize<NvulFunction[]>(System.IO.File.ReadAllText(
+			var nvulFunctions = Newtonsoft.Json.JsonConvert.DeserializeObject<NvulFunction[]>(System.IO.File.ReadAllText(
 				Path.Join(webPath, "/DefaultConfiguration/nvulFunctions.json")));
-			var nvulImplicits = Utf8Json.JsonSerializer.Deserialize<NvulImplicit[]>(System.IO.File.ReadAllText(
+			var nvulImplicits = Newtonsoft.Json.JsonConvert.DeserializeObject<NvulImplicit[]>(System.IO.File.ReadAllText(
 				Path.Join(webPath, "/DefaultConfiguration/nvulImplicits.json")));
 
-			this._defaultConfiguration = new NvulConfiguration(nvulFunctions, nvulImplicits, nvulKeywords, nvulOperators);
+			this._defaultConfiguration = new NvulConfiguration(nvulFunctions!, nvulImplicits!, nvulKeywords!, nvulOperators!);
 		}
 
 		private void UpdateRussianConfig()
 		{
 			var webPath = this._environment.WebRootPath;
 
-			var nvulKeywords = Utf8Json.JsonSerializer.Deserialize<NvulKeyword[]>(System.IO.File.ReadAllText(
+			var nvulKeywords = Newtonsoft.Json.JsonConvert.DeserializeObject<NvulKeyword[]>(System.IO.File.ReadAllText(
 				Path.Join(webPath, "/RussianConfiguration/nvulKeywords.json")));
-			var nvulOperators = Utf8Json.JsonSerializer.Deserialize<NvulOperator[]>(System.IO.File.ReadAllText(
+			var nvulOperators = Newtonsoft.Json.JsonConvert.DeserializeObject<NvulOperator[]>(System.IO.File.ReadAllText(
 				Path.Join(webPath, "/RussianConfiguration/nvulOperators.json")));
-			var nvulFunctions = Utf8Json.JsonSerializer.Deserialize<NvulFunction[]>(System.IO.File.ReadAllText(
+			var nvulFunctions = Newtonsoft.Json.JsonConvert.DeserializeObject<NvulFunction[]>(System.IO.File.ReadAllText(
 				Path.Join(webPath, "/RussianConfiguration/nvulFunctions.json")));
-			var nvulImplicits = Utf8Json.JsonSerializer.Deserialize<NvulImplicit[]>(System.IO.File.ReadAllText(
+			var nvulImplicits = Newtonsoft.Json.JsonConvert.DeserializeObject<NvulImplicit[]>(System.IO.File.ReadAllText(
 				Path.Join(webPath, "/RussianConfiguration/nvulImplicits.json")));
 
-			this._russianConfiguration = new NvulConfiguration(nvulFunctions, nvulImplicits, nvulKeywords, nvulOperators);
+			this._russianConfiguration = new NvulConfiguration(nvulFunctions!, nvulImplicits!, nvulKeywords!, nvulOperators!);
 		}
 	}
 }

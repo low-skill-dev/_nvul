@@ -15,7 +15,7 @@ namespace nvul_compiler.Models.CodeTree
 	}
 	public class CycleNode: INodeWithConditionAndChilds
 	{
-		public int InFileCharIndex { get; set; }
+		public int InNodeCharIndex { get; set; }
 		public ICodeNode Condition { get; set; }
 		public IEnumerable<ICodeNode> Childs { get; set; }
 		public NvulKeyword? NvulKeyword { get; set; }

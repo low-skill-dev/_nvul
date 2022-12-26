@@ -1,0 +1,83 @@
+[
+	{
+		"OperatorString": "+",
+		"OperatorPriority": 768,
+		"LeftType": "действительное",
+		"RightType": "действительное",
+		"EvaluatesTo": "действительное"
+	},
+	{
+		"OperatorString": "-",
+		"OperatorPriority": 768,
+		"LeftType": "действительное",
+		"RightType": "действительное",
+		"EvaluatesTo": "действительное"
+	},
+	{
+		"OperatorString": "*",
+		"OperatorPriority": 512,
+		"LeftType": "действительное",
+		"RightType": "действительное",
+		"EvaluatesTo": "действительное"
+	},
+	{
+		"OperatorString": "/",
+		"OperatorPriority": 512,
+		"LeftType": "действительное",
+		"RightType": "действительное",
+		"EvaluatesTo": "действительное"
+	},
+
+
+	{
+		"OperatorString": "+",
+		"OperatorPriority": 768,
+		"LeftType": "целое",
+		"RightType": "целое",
+		"EvaluatesTo": "целое"
+	},
+	{
+		"OperatorString": "-",
+		"OperatorPriority": 768,
+		"LeftType": "целое",
+		"RightType": "целое",
+		"EvaluatesTo": "целое"
+	},
+	{
+		"OperatorString": "*",
+		"OperatorPriority": 512,
+		"LeftType": "целое",
+		"RightType": "целое",
+		"EvaluatesTo": "целое"
+	},
+	{
+		"OperatorString": "/",
+		"OperatorPriority": 512,
+		"LeftType": "целое",
+		"RightType": "целое",
+		"EvaluatesTo": "целое"
+	},
+
+
+	{
+		"OperatorString": "<",
+		"OperatorPriority": 1024,
+		"LeftType": "действительное",
+		"RightType": "действительное",
+		"EvaluatesTo": "логическое"
+	},
+	{
+		"OperatorString": ">",
+		"OperatorPriority": 1024,
+		"LeftType": "действительное",
+		"RightType": "действительное",
+		"EvaluatesTo": "логическое"
+	},
+	{
+		"OperatorString": "==",
+		"OperatorPriority": 1024,
+		"LeftType": "действительное",
+		"RightType": "действительное",
+		"EvaluatesTo": "логическое"
+	}
+]

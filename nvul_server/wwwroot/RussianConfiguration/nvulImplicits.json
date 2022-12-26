@@ -1,6 +1,48 @@
 [
-	{
-		"Vartype": "целое",
-		"ImplicitTo": "действительное"
-	},
+  {
+   "vartype": "integer",
+   "implicitTo": "float"
+  },
+  {
+   "vartype": "integer",
+   "implicitTo": "целое"
+  },
+  {
+   "vartype": "integer",
+   "implicitTo": "действительное"
+  },
+  
+  {
+   "vartype": "float",
+   "implicitTo": "действительное"
+  },
+  
+  
+  {
+   "vartype": "целое",
+   "implicitTo": "integer"
+  },
+  {
+   "vartype": "целое",
+   "implicitTo": "float"
+  },
+  {
+   "vartype": "целое",
+   "implicitTo": "действительное"
+  },
+
+  
+  {
+   "vartype": "действительное",
+   "implicitTo": "float"
+  },
+  
+  {
+   "vartype": "логическое",
+   "implicitTo": "logical"
+  },
+  {
+   "vartype": "logical",
+   "implicitTo": "логическое"
+  }
 ]

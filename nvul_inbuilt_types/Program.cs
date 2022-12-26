@@ -15,7 +15,7 @@ class IntegerMatrix
 		return new IntegerMatrix(rows, cols);
 	}
 
-	public static IntegerMatrix InputCreate(long rows, int cols)
+	public static IntegerMatrix InputCreate(long rows, long cols)
 	{
 		IntegerMatrix result = new IntegerMatrix(rows, cols);
 		for (int r = 0; r < result._source.GetLength(0); r++)
@@ -35,7 +35,7 @@ class IntegerMatrix
 	public override string ToString()
 	{
 		int maxLen = 0;
-		// I dont have time to optimize
+		/* I dont have time to optimize */
 		foreach (var r in _source)
 			foreach(var i in r) 
 				if (i.ToString().Length > maxLen) 

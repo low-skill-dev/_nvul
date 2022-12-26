@@ -12,14 +12,15 @@ export const NvulRemoteCompiler: React.FC = ({ ...props }) => {
     const [compilationResult, setCompilationResult] = useState<string>("");
     const [isNetworkLocked, setIsNetworkLocked] = useState<boolean>(false);
 
-    useEffect(()=>{
-        try{
+    useEffect(() => {
+        try {
             loadConfig("en");
         } catch { }
-        console.log("compiler loaded.");
-    },[]);
+        console.log("Compiler loaded.");
+    }, []);
 
     const loadConfig = async (lang: string) => {
+        console.log("Requesting configuration...")
         setIsNetworkLocked(true);
         setTimeout(() => { setIsNetworkLocked(false); }, 5000);
 
@@ -32,22 +33,23 @@ export const NvulRemoteCompiler: React.FC = ({ ...props }) => {
             if (response.status != 200)
                 setConfiguration(`Error: HTTP ${response.status}`);
             else
-                setConfiguration(JSON.stringify(response.data,null,1));
+                setConfiguration(JSON.stringify(response.data, null, 1));
 
-            console.log(response.data);
+            console.log("Configuration received from server.")
         } catch { }
 
         setIsNetworkLocked(false);
     }
 
     const requestCompilation = async () => {
+        console.log("Requesting compilation...");
         setIsNetworkLocked(true);
         setTimeout(() => { setIsNetworkLocked(false); }, 5000);
 
         try {
             const request = new CompilationRequest(
-                codeInput, 
-                configuration, 
+                codeInput,
+                configuration,
                 true);
 
             const response = await NvulApiHelper.RequestCodeCompilation(request);
@@ -58,13 +60,22 @@ export const NvulRemoteCompiler: React.FC = ({ ...props }) => {
                 setErrorMessage(`Network error: HTTP ${response.status}`);
             } else {
                 const result = response.data;
-                setParsingResult(JSON.stringify(JSON.parse(
-                    result.parsingResult ?? ""),null,2));
+                try {
+                    setParsingResult(JSON.stringify(JSON.parse(result.parsingResult ?? ""), null, 2));
+                } catch (error) {
+                    console.log(`Unable to pretty print parsing result: ${error}`);
+                    try{
+                        setParsingResult(result.parsingResult ?? "");
+                    } catch { }
+                }
                 setCompilationResult(result.compilationResult ?? "");
                 setErrorMessage(result.errorMessage ?? "");
             }
+
+            console.log("Compilation result received from server.");
         }
         catch { }
+
         setIsNetworkLocked(false);
     }
 
@@ -91,13 +102,13 @@ export const NvulRemoteCompiler: React.FC = ({ ...props }) => {
             </Collapsible>
 
             <Collapsible trigger="Parsing result" className={styles.collapsibleBlock} openedClassName={styles.collapsibleBlock} transitionTime={100}>
-                <textarea value={parsingResult} onChange={e=>setParsingResult(e.target.value)} rows={15} className={styles.codeTextArea}>
+                <textarea value={parsingResult} onChange={e => setParsingResult(e.target.value)} rows={15} className={styles.codeTextArea}>
 
                 </textarea>
             </Collapsible>
 
             <Collapsible trigger="Compilation result" className={styles.collapsibleBlock} openedClassName={styles.collapsibleBlock} transitionTime={100} open={true}>
-                <textarea value={compilationResult} onChange={e=>setCompilationResult(e.target.value)} rows={15} className={styles.codeTextArea}>
+                <textarea value={compilationResult} onChange={e => setCompilationResult(e.target.value)} rows={15} className={styles.codeTextArea}>
 
                 </textarea>
             </Collapsible>

@@ -18,7 +18,17 @@
 		"EvaluatesTo": null,
 		"ApplicableTypes": null,
 		"Arguments": {
-			"ParametersTypes": [ "float", "matrix" ],
+			"ParametersTypes": [ "float" ],
+			"ParametersDescription": null
+		},
+		"TranslationString": "Console.WriteLine"
+	},
+	{
+		"FunctionName": "PrintMatrixValue",
+		"EvaluatesTo": null,
+		"ApplicableTypes": null,
+		"Arguments": {
+			"ParametersTypes": [ "matrix" ],
 			"ParametersDescription": null
 		},
 		"TranslationString": "Console.WriteLine"

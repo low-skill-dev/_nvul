@@ -79,5 +79,12 @@
 		"LeftType": "float",
 		"RightType": "float",
 		"EvaluatesTo": "logical"
+	},
+	{
+		"OperatorString": "!=",
+		"OperatorPriority": 1024,
+		"LeftType": "float",
+		"RightType": "float",
+		"EvaluatesTo": "logical"
 	}
 ]
